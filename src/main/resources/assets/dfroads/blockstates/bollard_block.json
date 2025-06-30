@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "facing=north": { "model": "dfroads:block/bollard", "uvlock": true },
+        "facing=east": { "model": "dfroads:block/bollard", "uvlock": true, "y": 90 },
+        "facing=south": { "model": "dfroads:block/bollard", "uvlock": true, "y": 180 },
+        "facing=west": { "model": "dfroads:block/bollard", "uvlock": true, "y": 270 }
+    }
+}

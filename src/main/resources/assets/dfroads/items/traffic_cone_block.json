@@ -1,0 +1,20 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:component",
+    "component": "custom_name",
+    "cases": [
+      {
+        "when": "cone-chan",
+        "model": {
+          "type": "minecraft:model",
+          "model": "dfroads:block/cone_chan"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "dfroads:block/normal_cone"
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+	"schemaVersion": 1,
+	"id": "dfroads",
+	"version": "${version}",
+	"name": "dfroads",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"derfl007"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "LGPL",
+	"icon": "assets/dfroads/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			{
+				"value": "at.derfl007.dfroads.DFRoads",
+				"adapter": "kotlin"
+			}
+		],
+		"client": [
+			{
+				"value": "at.derfl007.dfroads.DFRoadsClient",
+				"adapter": "kotlin"
+			}
+		],
+		"fabric-datagen": [
+			{
+				"value": "at.derfl007.dfroads.datagen.DFRoadsDatagen",
+				"adapter": "kotlin"
+			}
+		]
+	},
+	"mixins": [
+		"dfroads.mixins.json",
+		{
+			"config": "dfroads.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.16.14",
+		"minecraft": "~1.21.5",
+		"java": ">=21",
+		"fabric-api": "*",
+		"fabric-language-kotlin": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	},
+	"accessWidener": "dfroads.accesswidener"
+}

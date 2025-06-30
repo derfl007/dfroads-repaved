@@ -1,0 +1,6 @@
+{
+  "parent": "dfroads:block/traffic_cone_block",
+  "textures": {
+    "cone_chan": "dfroads:block/cone_chan"
+  }
+}

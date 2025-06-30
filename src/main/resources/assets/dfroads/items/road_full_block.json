@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "dfroads:block/road_block_full_item"
+  }
+}

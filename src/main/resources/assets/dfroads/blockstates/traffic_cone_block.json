@@ -1,0 +1,5 @@
+{
+    "variants": {
+        "": { "model": "dfroads:block/normal_cone", "uvlock": true }
+    }
+}

@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "dfroads:block/pedestrian_traffic_light_base"
+  }
+}

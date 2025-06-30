@@ -1,0 +1,99 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "dfroads:block/sign_post_center"
+      }
+    },
+    {
+      "apply": {
+        "model": "dfroads:block/sign_post_front"
+      },
+      "when": {
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "dfroads:block/sign_post_front",
+        "y": 90
+      },
+      "when": {
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "dfroads:block/sign_post_front",
+        "y": 180
+      },
+      "when": {
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "dfroads:block/sign_post_front",
+        "y": 270
+      },
+      "when": {
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "dfroads:block/sign_post_side",
+        "x": -90
+      },
+      "when": {
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "dfroads:block/sign_post_side",
+        "x": -90,
+        "y": 90
+      },
+      "when": {
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "dfroads:block/sign_post_side",
+        "x": 90
+      },
+      "when": {
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "dfroads:block/sign_post_side",
+        "x": -90,
+        "y": -90
+      },
+      "when": {
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "dfroads:block/sign_post_side",
+        "x": 180
+      },
+      "when": {
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "dfroads:block/sign_post_side"
+      },
+      "when": {
+        "down": "true"
+      }
+    }
+  ]
+}

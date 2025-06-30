@@ -1,0 +1,21 @@
+{
+  "textures": {
+    "0": "dfroads:block/metal",
+    "particle": "dfroads:block/metal"
+  },
+  "elements": [
+    {
+      "name": "Cube",
+      "from": [ 6.001, -5.999, 6.001 ],
+      "to": [ 9.999, 5.999, 9.999 ],
+      "faces": {
+        "north": { "texture": "#0", "uv": [ 0.0, 0.0, 2.0, 7.0 ] },
+        "east": { "texture": "#0", "uv": [ 0.0, 0.0, 2.0, 7.0 ] },
+        "south": { "texture": "#0", "uv": [ 0.0, 0.0, 2.0, 7.0 ] },
+        "west": { "texture": "#0", "uv": [ 0.0, 0.0, 2.0, 7.0 ] },
+        "up": { "texture": "#0", "uv": [ 0.0, 0.0, 2.0, 2.0 ] },
+        "down": { "texture": "#0", "uv": [ 0.0, 0.0, 2.0, 2.0 ] }
+      }
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+	"credit": "Model generated using MrCrayfish's Model Creator (http://mrcrayfish.com/modelcreator/)",
+	"textures": {
+		"0": "dfroads:block/metal",
+		"particle": "dfroads:block/metal"
+	},
+	"elements": [
+		{
+			"name": "Cube",
+			"from": [0, 0, 0],
+			"to": [2, 15, 2],
+			"faces": {
+				"north": {"uv": [0, 0, 2, 15], "texture": "#0"},
+				"east": {"uv": [0, 0, 2, 15], "texture": "#0"},
+				"south": {"uv": [0, 0, 2, 15], "texture": "#0"},
+				"west": {"uv": [0, 0, 2, 15], "texture": "#0"},
+				"up": {"uv": [0, 0, 2, 2], "texture": "#0"},
+				"down": {"uv": [0, 0, 2, 2], "texture": "#0"}
+			}
+		}
+	]
+}

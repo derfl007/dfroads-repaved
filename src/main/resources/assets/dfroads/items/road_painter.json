@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "dfroads:item/road_painter_item",
+    "tints": [
+      {
+        "type": "minecraft:custom_model_data",
+        "default": 16777215
+      }
+    ]
+  }
+}
