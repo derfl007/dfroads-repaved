@@ -16,9 +16,8 @@ import net.minecraft.util.math.Direction
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.util.shape.VoxelShapes
 import net.minecraft.world.BlockView
-import net.minecraft.world.WorldView
 
-abstract class RoadBaseBlock(private val outlineShape: VoxelShape, private val needsSupport: Boolean = false, settings: Settings) : HorizontalFacingBlock(
+abstract class RoadBaseBlock(private val outlineShape: VoxelShape, settings: Settings) : HorizontalFacingBlock(
     settings
 ) {
     init {
@@ -27,16 +26,6 @@ abstract class RoadBaseBlock(private val outlineShape: VoxelShape, private val n
 
     override fun appendProperties(builder: StateManager.Builder<Block, BlockState>) {
         builder.add(FACING, COLOR, TEXTURE_FACING, TEXTURE)
-    }
-
-
-
-    override fun canPlaceAt(state: BlockState, world: WorldView, pos: BlockPos): Boolean {
-        return if (needsSupport) {
-            world.getBlockState(pos.offset(Direction.DOWN)).block is RoadBaseBlock
-        } else {
-            true
-        }
     }
 
     override fun isTransparent(state: BlockState?) = true
@@ -92,14 +81,14 @@ abstract class RoadBaseBlock(private val outlineShape: VoxelShape, private val n
 private val ROAD_BLOCK_SHAPE =
     Block.createCuboidShape(0.0, RoadBaseBlock.calculateY(), 0.0, 16.0, RoadBaseBlock.calculateY(1f), 16.0)
 
-class RoadFullBlock(settings: Settings) : RoadBaseBlock(ROAD_BLOCK_SHAPE, false, settings) {
+class RoadFullBlock(settings: Settings) : RoadBaseBlock(ROAD_BLOCK_SHAPE, settings) {
     override fun getCodec(): MapCodec<out HorizontalFacingBlock?> = createCodec { settings -> RoadFullBlock(settings) }
 }
 
 private val ROAD_SLAB_SHAPE =
     Block.createCuboidShape(0.0, RoadBaseBlock.calculateY(), 0.0, 16.0, RoadBaseBlock.calculateY(0.5f), 16.0)
 
-class RoadSlabBlock(settings: Settings) : RoadBaseBlock(ROAD_SLAB_SHAPE, false, settings) {
+class RoadSlabBlock(settings: Settings) : RoadBaseBlock(ROAD_SLAB_SHAPE, settings) {
     override fun getCodec(): MapCodec<out HorizontalFacingBlock?>? = createCodec { settings -> RoadSlabBlock(settings) }
 }
 
@@ -110,7 +99,7 @@ private val ROAD_FULL_SLOPE_SHAPE = VoxelShapes.union(
     Block.createCuboidShape(0.0, RoadBaseBlock.calculateY(), 12.0, 16.0, RoadBaseBlock.calculateY(0.25f), 16.0)
 )
 
-class RoadFullSlopeBlock(settings: Settings) : RoadBaseBlock(ROAD_FULL_SLOPE_SHAPE, false, settings) {
+class RoadFullSlopeBlock(settings: Settings) : RoadBaseBlock(ROAD_FULL_SLOPE_SHAPE, settings) {
     override fun getCodec(): MapCodec<out HorizontalFacingBlock?>? =
         createCodec { settings -> RoadFullSlopeBlock(settings) }
 }
@@ -120,7 +109,7 @@ private val ROAD_TOP_SLOPE_SHAPE = VoxelShapes.union(
     Block.createCuboidShape(0.0, RoadBaseBlock.calculateY(), 8.0, 16.0, (RoadBaseBlock.MIN_Y + 0.75) * 16.0, 16.0)
 )
 
-class RoadTopSlopeBlock(settings: Settings) : RoadBaseBlock(ROAD_TOP_SLOPE_SHAPE, true, settings) {
+class RoadTopSlopeBlock(settings: Settings) : RoadBaseBlock(ROAD_TOP_SLOPE_SHAPE, settings) {
     override fun getCodec(): MapCodec<out HorizontalFacingBlock?>? =
         createCodec { settings -> RoadTopSlopeBlock(settings) }
 }
@@ -130,7 +119,7 @@ private val ROAD_BOTTOM_SLOPE_SHAPE = VoxelShapes.union(
     Block.createCuboidShape(0.0, RoadBaseBlock.calculateY(), 8.0, 16.0, RoadBaseBlock.calculateY(0.25f), 16.0)
 )
 
-class RoadBottomSlopeBlock(settings: Settings) : RoadBaseBlock(ROAD_BOTTOM_SLOPE_SHAPE, false, settings) {
+class RoadBottomSlopeBlock(settings: Settings) : RoadBaseBlock(ROAD_BOTTOM_SLOPE_SHAPE, settings) {
     override fun getCodec(): MapCodec<out HorizontalFacingBlock?>? =
         createCodec { settings -> RoadBottomSlopeBlock(settings) }
 }
