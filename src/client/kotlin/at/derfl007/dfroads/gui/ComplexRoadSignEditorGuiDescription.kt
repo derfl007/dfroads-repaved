@@ -38,6 +38,7 @@ class ComplexRoadSignEditorGuiDescription(
     var loadPresetList: WListPanel<String, WPresetListItem>
     val presets: MutableMap<String, SignElementPreset> = mutableMapOf()
 
+    val removeElementButton = WIconButton("trash")
     var previewPanel = WDragArea()
     val colorPicker = WColorPicker()
     val borderColorPicker = WColorPicker()
@@ -58,7 +59,12 @@ class ComplexRoadSignEditorGuiDescription(
         val presetNameInput = WTextField(Text.translatable("gui.dfroads.complex_sign_editor.save_preset_hint"))
 
         val saveAsPresetButton = WIconButton("save").setOnClick {
+            if (presetNameInput.text.isEmpty()) return@setOnClick
             savePreset(presetNameInput.text)
+        }
+
+        presetNameInput.setChangedListener {
+            saveAsPresetButton.isEnabled = it.isNotEmpty()
         }
 
         loadPresets()
@@ -77,7 +83,6 @@ class ComplexRoadSignEditorGuiDescription(
         val typeArrowButton = WIconButton("type_arrow")
         val typeIconButton = WIconButton("type_icon")
         val typeBoxButton = WIconButton("type_box")
-        val removeElementButton = WIconButton("trash")
 
         typeTextButton.setOnClick {
             signElements.add(SignElement(type = TEXT, text = "enter text", width = 0.2f, height = 0.2f))
@@ -106,23 +111,31 @@ class ComplexRoadSignEditorGuiDescription(
             root.renderPreview()
         }
 
+        removeElementButton.isEnabled = false
+
         colorPicker.addOnClickHandlers {
             signElements[selectedElementIndex].color = Color.entries[it]
             root.renderPreview()
         }
 
+        colorPicker.enabled = false
+
         borderColorPicker.addOnClickHandlers {
+            if (signElements.isEmpty()) return@addOnClickHandlers
             signElements[selectedElementIndex].borderColor = Color.entries[it]
-            root.renderPreview()
         }
 
+        borderColorPicker.enabled = false
+
         borderColorToggle.setOnToggle {
+            if (signElements.isEmpty()) return@setOnToggle
             borderColorPicker.enabled = it
             signElements[selectedElementIndex].borderColor = if (it) Color.WHITE else Color.NONE
             root.renderPreview()
         }
 
         textInput.setChangedListener {
+            if (signElements.isEmpty()) return@setChangedListener
             if (signElements[selectedElementIndex].text != it) {
                 signElements[selectedElementIndex].text = it
                 root.renderPreview()
@@ -130,7 +143,7 @@ class ComplexRoadSignEditorGuiDescription(
         }
 
         iconTexturePicker.addOnClickHandlers {
-            println("click")
+            if (signElements.isEmpty()) return@addOnClickHandlers
             signElements[selectedElementIndex].iconTexture = it
             root.renderPreview()
         }
@@ -189,6 +202,11 @@ class ComplexRoadSignEditorGuiDescription(
             entity.height = h / 90f
             previewPanel.maxX = w + PADDING
             previewPanel.maxY = h + PADDING
+        }
+        backgroundTexture.selectHandlers += {
+            colorPicker.enabled = false
+            borderColorPicker.enabled = false
+            removeElementButton.isEnabled = false
         }
 
         previewPanel.add(
@@ -251,7 +269,9 @@ class ComplexRoadSignEditorGuiDescription(
                     remove(iconTexturePicker)
                 }
 
+                removeElementButton.isEnabled = true
                 colorPicker.activeButtonIndex = signElement.color.ordinal
+                colorPicker.enabled = true
                 borderColorPicker.activeButtonIndex = signElement.borderColor.ordinal
                 borderColorPicker.enabled = signElement.borderColor != Color.NONE
                 borderColorToggle.toggle = signElement.borderColor != Color.NONE
