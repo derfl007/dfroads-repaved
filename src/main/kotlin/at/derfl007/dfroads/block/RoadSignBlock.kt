@@ -25,7 +25,7 @@ import net.minecraft.util.shape.VoxelShapes
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-open class RoadSignBlock(settings: Settings) : SignPostBlock(settings), BlockEntityProvider {
+open class RoadSignBlock(settings: Settings) : SignPostBlock(settings, false), BlockEntityProvider {
 
     init {
         defaultState = stateManager.defaultState
@@ -46,6 +46,8 @@ open class RoadSignBlock(settings: Settings) : SignPostBlock(settings), BlockEnt
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {
         return super.getPlacementState(ctx)
     }
+
+
 
     override fun getOutlineShape(
         state: BlockState,

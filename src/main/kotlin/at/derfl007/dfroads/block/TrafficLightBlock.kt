@@ -25,7 +25,7 @@ import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-open class TrafficLightBlock(settings: Settings): SignPostBlock(settings), BlockEntityProvider {
+open class TrafficLightBlock(settings: Settings): SignPostBlock(settings, false), BlockEntityProvider {
     init {
         defaultState = stateManager.defaultState
             .with(FACING, Direction.NORTH)

@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents
 import net.minecraft.block.AbstractBlock.Settings
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
+import net.minecraft.block.MapColor
 import net.minecraft.entity.EquipmentSlot
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
@@ -41,7 +42,7 @@ object BlockRegistry {
     fun registerBlocks() {
         DFRoads.LOGGER.info("Registering {} blocks", DFRoads.MOD_ID);
 
-        val roadBlockSettingsSolid = Settings.copy(Blocks.STONE).velocityMultiplier(1.2f)
+        val roadBlockSettingsSolid = Settings.copy(Blocks.STONE).velocityMultiplier(1.2f).mapColor(MapColor.BLACK)
         val roadBlockSettingsTransparent =
             Settings.copy(Blocks.STONE).velocityMultiplier(1.2f).solidBlock { _, _, _ -> false }.nonOpaque()
 

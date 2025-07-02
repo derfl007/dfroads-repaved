@@ -1,7 +1,10 @@
 package at.derfl007.dfroads.block
 
 import com.mojang.serialization.MapCodec
-import net.minecraft.block.*
+import net.minecraft.block.Block
+import net.minecraft.block.BlockState
+import net.minecraft.block.HorizontalFacingBlock
+import net.minecraft.block.ShapeContext
 import net.minecraft.item.ItemPlacementContext
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.BooleanProperty
@@ -13,11 +16,13 @@ import net.minecraft.util.math.random.Random
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.util.shape.VoxelShapes
 import net.minecraft.world.BlockView
-import net.minecraft.world.World
 import net.minecraft.world.WorldView
 import net.minecraft.world.tick.ScheduledTickView
 
-open class SignPostBlock(settings: Settings): RedstoneTransmitterBlock(settings) {
+/**
+ * @param shouldFrontConnect Whether the front of the block should connect to other [SignPostBlock] instances.
+ */
+open class SignPostBlock(settings: Settings, val shouldFrontConnect: Boolean = true): RedstoneTransmitterBlock(settings) {
 
     init {
         defaultState = stateManager.defaultState
@@ -45,35 +50,37 @@ open class SignPostBlock(settings: Settings): RedstoneTransmitterBlock(settings)
         neighborState: BlockState,
         random: Random
     ): BlockState? {
+        val facing = world.getBlockState(pos)[FACING]
         return state
-            .with(UP, canConnectTo(world, pos.up()))
-            .with(DOWN, canConnectTo(world, pos.down()))
-            .with(NORTH, canConnectTo(world, pos.north()))
-            .with(SOUTH, canConnectTo(world, pos.south()))
-            .with(EAST, canConnectTo(world, pos.east()))
-            .with(WEST, canConnectTo(world, pos.west()))
+            .with(UP, canConnectTo(world, pos, Direction.UP, facing))
+            .with(DOWN, canConnectTo(world, pos, Direction.DOWN, facing))
+            .with(NORTH, canConnectTo(world, pos, Direction.NORTH, facing))
+            .with(SOUTH, canConnectTo(world, pos, Direction.SOUTH, facing))
+            .with(EAST, canConnectTo(world, pos, Direction.EAST, facing))
+            .with(WEST, canConnectTo(world, pos, Direction.WEST, facing))
     }
 
-    private fun canConnectTo(world: World, pos: BlockPos): Boolean {
-        val state = world.getBlockState(pos)
-        return state.block !is AirBlock && state.block !is RedstoneWireBlock
-    }
-
-    private fun canConnectTo(world: WorldView, pos: BlockPos): Boolean {
-        val state = world.getBlockState(pos)
-        return state.block !is AirBlock && state.block !is RedstoneWireBlock
+    private fun canConnectTo(world: BlockView, pos: BlockPos, offset: Direction, facing: Direction): Boolean {
+        if (!shouldFrontConnect && facing == offset) return false
+        val state = world.getBlockState(pos.offset(offset))
+        val block = state.block
+        if (block is SignPostBlock) {
+            return block.shouldFrontConnect || state[FACING] != offset.opposite
+        }
+        return state.isFullCube(world, pos)
     }
 
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {
         val world = ctx.world
         val pos = ctx.blockPos
+        val facing = ctx.horizontalPlayerFacing.opposite
         return super.getPlacementState(ctx)
-            ?.with(UP, canConnectTo(world, pos.up()))
-            ?.with(DOWN, canConnectTo(world, pos.down()))
-            ?.with(NORTH, canConnectTo(world, pos.north()))
-            ?.with(SOUTH, canConnectTo(world, pos.south()))
-            ?.with(EAST, canConnectTo(world, pos.east()))
-            ?.with(WEST, canConnectTo(world, pos.west()))
+            ?.with(UP, canConnectTo(world, pos, Direction.UP, facing))
+            ?.with(DOWN, canConnectTo(world, pos, Direction.DOWN, facing))
+            ?.with(NORTH, canConnectTo(world, pos, Direction.NORTH, facing))
+            ?.with(SOUTH, canConnectTo(world, pos, Direction.SOUTH, facing))
+            ?.with(EAST, canConnectTo(world, pos, Direction.EAST, facing))
+            ?.with(WEST, canConnectTo(world, pos, Direction.WEST, facing))
     }
 
     override fun rotate(state: BlockState, rotation: BlockRotation): BlockState {
