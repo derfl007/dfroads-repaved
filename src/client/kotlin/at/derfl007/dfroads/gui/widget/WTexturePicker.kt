@@ -10,7 +10,7 @@ class WTexturePicker(
     textures: List<String>,
     var activeButtonIndex: Int = 0,
     var columns: Int = 8,
-    textureGetter: ((String) -> Identifier) = { DFRoads.id("textures/${it}.png") }
+    textureGetter: ((String) -> Identifier) = { DFRoads.id("textures/block/${it}.png") }
 ) : WGridPanel() {
 
     private val buttons: MutableList<WButton> = mutableListOf()

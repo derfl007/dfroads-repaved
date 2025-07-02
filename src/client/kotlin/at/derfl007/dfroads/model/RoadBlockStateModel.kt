@@ -194,7 +194,7 @@ class RoadBlockStateModel(
             val SPRITE_IDS = Array(roadTextures.size) {
                 SpriteIdentifier(
                     SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
-                    Identifier.of("dfroads", roadTextures[it])
+                    Identifier.of("dfroads", "block/${roadTextures[it]}")
                 )
             }
             val ROAD_SPRITE_ID =

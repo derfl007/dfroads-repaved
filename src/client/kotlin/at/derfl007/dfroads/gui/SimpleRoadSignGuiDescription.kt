@@ -9,7 +9,9 @@ import at.derfl007.dfroads.networking.BlockEntityUpdatePayload
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription
 import io.github.cottonmc.cotton.gui.widget.*
 import io.github.cottonmc.cotton.gui.widget.data.Axis
+import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment
 import io.github.cottonmc.cotton.gui.widget.data.Insets
+import io.github.cottonmc.cotton.gui.widget.data.VerticalAlignment
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.nbt.NbtCompound
@@ -24,13 +26,10 @@ class SimpleRoadSignGuiDescription(
     val context: ClientPlayNetworking.Context
 ) : LightweightGuiDescription(), OnCloseHandler {
 
-    //    private var compassTexture: WSprite
     private var signTexture: WSprite
-//    private var customText: WText
-//    private var customTextContainer: WScalableWidget
+    private var signTextureName: WLabel
     private var texturePicker: WTexturePicker
     private var sizeSlider: WLabeledSlider
-//    private var textInput: WTextField
 
     init {
         val root = WGridPanel(20)
@@ -42,20 +41,23 @@ class SimpleRoadSignGuiDescription(
             10, 0, 7, 1
         );
 
-        signTexture = WSprite(DFRoads.id("textures/${Constants.signTextures[entity.texture]}.png"))
+        signTexture = WSprite(DFRoads.id("textures/block/${Constants.signTextures[entity.texture]}.png"))
         root.add(signTexture, 10, 1, 6, 6)
 
-//        customText = WText(Text.of(entity.customText))
-//        customTextContainer = WScalableWidget(3f) // TODO set scale, width, etc. based on signConfigs
-//        customTextContainer.add(customText)
-//        root.add(customTextContainer, 10, 1, 6, 6)
+        signTextureName =
+            WLabel(Text.translatable("gui.dfroads.simple_sign_editor.textures.${Constants.signTextures[entity.texture]}"))
+        signTextureName.verticalAlignment = VerticalAlignment.CENTER
+        signTextureName.horizontalAlignment = HorizontalAlignment.CENTER
+        root.add(signTextureName, 10, 7, 6, 1)
 
         texturePicker = WTexturePicker(Constants.signTextures)
         texturePicker.columns = 9
         texturePicker.activeButtonIndex = entity.texture
         texturePicker.addOnClickHandlers {
             entity.texture = it
-            signTexture.setImage(DFRoads.id("textures/${Constants.signTextures[entity.texture]}.png"))
+            signTexture.setImage(DFRoads.id("textures/block/${Constants.signTextures[entity.texture]}.png"))
+            signTextureName.text =
+                Text.translatable("gui.dfroads.simple_sign_editor.textures.${Constants.signTextures[entity.texture]}")
         }
 
         val texturePickerContainer = WScrollPanel(texturePicker)
@@ -73,14 +75,6 @@ class SimpleRoadSignGuiDescription(
         }
         root.add(sizeSlider, 10, 8, 6, 1)
 
-//        textInput = WTextField(Text.translatable("gui.dfroads.customText"))
-//        textInput.text = entity.customText
-//        textInput.setChangedListener {
-//            customText.text = Text.of(it)
-//            entity.customText = it
-//        }
-//        root.add(textInput, 10, 9, 6, 1)
-
         val applyButton = WIconButton("apply").setOnClick(::save)
         root.add(applyButton, 16, 10, 1, 1)
 
@@ -92,7 +86,6 @@ class SimpleRoadSignGuiDescription(
         val nbt = NbtCompound()
         nbt.putInt("texture", texturePicker.activeButtonIndex)
         nbt.putInt("size", sizeSlider.value)
-//        nbt.putString("customText", textInput.text)
         entity.markDirty()
         ClientPlayNetworking.send(BlockEntityUpdatePayload(pos, entityType, nbt))
         context.client().setScreen(null)

@@ -4,7 +4,6 @@ import at.derfl007.dfroads.Constants
 import at.derfl007.dfroads.DFRoads
 import at.derfl007.dfroads.block.LedSignBlock
 import at.derfl007.dfroads.block.RedstoneTransmitterBlock
-import at.derfl007.dfroads.block.RoadSignBlock
 import at.derfl007.dfroads.blockentity.RoadSignBlockEntity
 import net.minecraft.block.HorizontalFacingBlock
 import net.minecraft.client.render.RenderLayer
@@ -30,7 +29,7 @@ class RoadSignBlockEntityRenderer(val context: BlockEntityRendererFactory.Contex
     ) {
         matrices.push()
 
-        val texture = DFRoads.id("textures/${Constants.signTextures[entity.texture]}.png")
+        val texture = DFRoads.id("textures/block/${Constants.signTextures[entity.texture]}.png")
         val isLedSign = entity.cachedState.block is LedSignBlock
         val size =
             if (isLedSign) 0.75f

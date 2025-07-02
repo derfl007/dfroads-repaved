@@ -10,7 +10,9 @@ import at.derfl007.dfroads.util.Color
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription
 import io.github.cottonmc.cotton.gui.widget.*
 import io.github.cottonmc.cotton.gui.widget.data.Axis
+import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment
 import io.github.cottonmc.cotton.gui.widget.data.Insets
+import io.github.cottonmc.cotton.gui.widget.data.VerticalAlignment
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.minecraft.client.MinecraftClient
 import net.minecraft.item.ItemStack
@@ -22,6 +24,7 @@ class RoadPainterGuiDescription(val itemStack: ItemStack, val hand: String) : Li
     //    private var compassTexture: WSprite
     private var roadTextureContainer: WRotatablePanel
     private var roadTexture: WSprite
+    private var roadTextureName: WLabel
     private var roadBgTexture: WSprite
     private var colorPicker: WColorPicker
     private var texturePicker: WTexturePicker
@@ -54,11 +57,16 @@ class RoadPainterGuiDescription(val itemStack: ItemStack, val hand: String) : Li
 
         // Road texture
         roadTexture =
-            WSprite(DFRoads.id("textures/${Constants.roadTextures[component.texture]}.png"))
+            WSprite(DFRoads.id("textures/block/${Constants.roadTextures[component.texture]}.png"))
         roadTexture.setOpaqueTint(component.color.rgb)
-        roadTexture.setImage(DFRoads.id("textures/${Constants.roadTextures[component.texture]}.png"))
+        roadTexture.setImage(DFRoads.id("textures/block/${Constants.roadTextures[component.texture]}.png"))
         roadTexture.setUv(0f, 0f, 1f, 1f)
         roadTextureContainer.add(roadTexture, 0, 0, 6 * 18, 6 * 18)
+
+        roadTextureName = WLabel(Text.translatable("gui.dfroads.road_painter.textures.${Constants.roadTextures[component.texture]}"))
+        roadTextureName.verticalAlignment = VerticalAlignment.CENTER
+        roadTextureName.horizontalAlignment = HorizontalAlignment.RIGHT
+        root.add(roadTextureName, 1, 7, 15, 1)
 
         // Color
         changeColorButton = WToggleButton(Text.translatable("gui.dfroads.road_painter.change_color_button_label"))
@@ -95,7 +103,9 @@ class RoadPainterGuiDescription(val itemStack: ItemStack, val hand: String) : Li
         texturePicker = WTexturePicker(Constants.roadTextures, component.texture)
         texturePicker.addOnClickHandlers {
             component.texture = it
-            roadTexture.setImage(DFRoads.id("textures/${Constants.roadTextures[component.texture]}.png"))
+            roadTexture.setImage(DFRoads.id("textures/block/${Constants.roadTextures[component.texture]}.png"))
+            roadTextureName.text =
+                Text.translatable("gui.dfroads.road_painter.textures.${Constants.roadTextures[component.texture]}")
         }
         root.add(texturePicker, 0, 4)
 
@@ -116,7 +126,7 @@ class RoadPainterGuiDescription(val itemStack: ItemStack, val hand: String) : Li
         root.add(textureFacingPicker, 2, 9)
 
         // Range
-        rangeSlider = WLabeledSlider(0, 16, Axis.HORIZONTAL)
+        rangeSlider = WLabeledSlider(0, 64, Axis.HORIZONTAL)
         rangeSlider.value = component.range
         rangeSlider.label = Text.translatable("gui.dfroads.road_painter.current_range_label", component.range)
         rangeSlider.labelUpdater = WLabeledSlider.LabelUpdater { value ->
