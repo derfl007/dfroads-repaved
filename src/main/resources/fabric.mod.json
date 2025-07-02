@@ -2,17 +2,16 @@
 	"schemaVersion": 1,
 	"id": "dfroads",
 	"version": "${version}",
-	"name": "dfroads",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"name": "derfl007's Road Mod: Repaved",
+	"description": "Make your cities more realistic with road markings, customizable road signs, working traffic lights and more",
 	"authors": [
 		"derfl007"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"sources": "https://github.com/derfl007/dfroads-repaved"
 	},
 	"license": "LGPL",
-	"icon": "assets/dfroads/icon.png",
+	"icon": "assets/dfroads/logo_square.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
@@ -47,9 +46,6 @@
 		"java": ">=21",
 		"fabric-api": "*",
 		"fabric-language-kotlin": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
 	},
 	"accessWidener": "dfroads.accesswidener"
 }
