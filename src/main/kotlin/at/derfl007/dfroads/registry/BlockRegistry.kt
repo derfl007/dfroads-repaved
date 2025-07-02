@@ -41,23 +41,27 @@ object BlockRegistry {
     fun registerBlocks() {
         DFRoads.LOGGER.info("Registering {} blocks", DFRoads.MOD_ID);
 
-        val roadBlockSettings =
+        val roadBlockSettingsSolid = Settings.copy(Blocks.STONE).velocityMultiplier(1.2f)
+        val roadBlockSettingsTransparent =
             Settings.copy(Blocks.STONE).velocityMultiplier(1.2f).solidBlock { _, _, _ -> false }.nonOpaque()
 
         ROAD_BLOCK = register(
-            "road_full_block", { settings -> RoadFullBlock(settings) }, true, roadBlockSettings
+            "road_full_block", { settings -> RoadFullBlock(settings) }, true, roadBlockSettingsSolid
         )
         ROAD_SLAB_BLOCK = register(
-            "road_slab_block", { settings -> RoadSlabBlock(settings) }, true, roadBlockSettings
+            "road_slab_block", { settings -> RoadSlabBlock(settings) }, true, roadBlockSettingsTransparent
         )
         ROAD_FULL_SLOPE_BLOCK = register(
-            "road_full_slope_block", { settings -> RoadFullSlopeBlock(settings) }, true, roadBlockSettings
+            "road_full_slope_block", { settings -> RoadFullSlopeBlock(settings) }, true, roadBlockSettingsTransparent
         )
         ROAD_TOP_SLOPE_BLOCK = register(
-            "road_top_slope_block", { settings -> RoadTopSlopeBlock(settings) }, true, roadBlockSettings
+            "road_top_slope_block", { settings -> RoadTopSlopeBlock(settings) }, true, roadBlockSettingsTransparent
         )
         ROAD_BOTTOM_SLOPE_BLOCK = register(
-            "road_bottom_slope_block", { settings -> RoadBottomSlopeBlock(settings) }, true, roadBlockSettings
+            "road_bottom_slope_block",
+            { settings -> RoadBottomSlopeBlock(settings) },
+            true,
+            roadBlockSettingsTransparent
         )
         ROAD_SIGN_BLOCK = register(
             "road_sign_block", ::RoadSignBlock, true, Settings.copy(Blocks.IRON_BARS)
