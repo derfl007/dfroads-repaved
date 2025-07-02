@@ -3,6 +3,8 @@ package at.derfl007.dfroads.gui
 import at.derfl007.dfroads.Constants
 import at.derfl007.dfroads.DFRoads
 import at.derfl007.dfroads.blockentity.ComplexRoadSignBlockEntity
+import at.derfl007.dfroads.blockentity.ComplexRoadSignBlockEntity.Companion.MAX_HEIGHT
+import at.derfl007.dfroads.blockentity.ComplexRoadSignBlockEntity.Companion.MAX_WIDTH
 import at.derfl007.dfroads.blockentity.ComplexRoadSignBlockEntity.SignElement
 import at.derfl007.dfroads.blockentity.ComplexRoadSignBlockEntity.SignElement.Type.*
 import at.derfl007.dfroads.gui.widget.*
@@ -23,6 +25,8 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.text.Text
 import net.minecraft.util.math.BlockPos
+import java.util.function.IntConsumer
+import kotlin.math.min
 
 @Suppress("UnstableApiUsage")
 class ComplexRoadSignEditorGuiDescription(
@@ -50,11 +54,20 @@ class ComplexRoadSignEditorGuiDescription(
         columns = 12,
         textureGetter = { DFRoads.id("textures/gui/sprites/${it}.png") }
     )
+    var signWidthInput: WLabeledSlider = WLabeledSlider(0, (MAX_WIDTH * 10).toInt())
+    var signHeightInput: WLabeledSlider = WLabeledSlider(0, (MAX_HEIGHT * 10).toInt())
+
+    val previewWidth = 10
+    val previewHeight = 6
+    val previewGrid = 18
+    val previewWidthPx = previewWidth * previewGrid
+    val previewHeightPx = previewHeight * previewGrid
 
     init {
-        val root = WGridPanel(20)
+        val root = WGridPanel(18)
         setRootPanel(root)
         root.insets = Insets.ROOT_PANEL
+        root.setGaps(2, 2)
 
         val presetNameInput = WTextField(Text.translatable("gui.dfroads.complex_sign_editor.save_preset_hint"))
 
@@ -92,7 +105,6 @@ class ComplexRoadSignEditorGuiDescription(
         typeArrowButton.setOnClick {
             signElements.add(SignElement(type = ARROW, width = 0.2f, height = 0.2f))
             root.renderPreview()
-
         }
 
         typeIconButton.setOnClick {
@@ -108,6 +120,11 @@ class ComplexRoadSignEditorGuiDescription(
 
         removeElementButton.setOnClick {
             signElements.removeAt(selectedElementIndex)
+            if (signElements.isEmpty()) {
+                colorPicker.enabled = false
+                borderColorPicker.enabled = false
+                removeElementButton.isEnabled = false
+            }
             root.renderPreview()
         }
 
@@ -153,22 +170,45 @@ class ComplexRoadSignEditorGuiDescription(
             root.renderPreview()
         }
 
-        root.add(WLabel(Text.translatable("gui.dfroads.complex_sign_editor.add_element_label")).setVerticalAlignment(VerticalAlignment.BOTTOM), 0, 6)
-        root.add(typeTextButton, 0, 7, 1, 1)
-        root.add(typeArrowButton, 1, 7, 1, 1)
-        root.add(typeIconButton, 2, 7, 1, 1)
-        root.add(typeBoxButton, 3, 7, 1, 1)
+        signWidthInput.value = (entity.width * 10).toInt()
+        signWidthInput.label = Text.of(String.format("%.1f", entity.width))
+        signWidthInput.labelUpdater = WLabeledSlider.LabelUpdater {
+            Text.of(String.format("%.1f", it / 10f))
+        }
+        signWidthInput.draggingFinishedListener = IntConsumer {
+            entity.width = it / 10f
+            root.renderPreview()
+        }
+
+        signHeightInput.value = (entity.height * 10).toInt()
+        signHeightInput.label = Text.of(String.format("%.1f", entity.height))
+        signHeightInput.labelUpdater = WLabeledSlider.LabelUpdater {
+            Text.of(String.format("%.1f", it / 10f))
+        }
+        signHeightInput.draggingFinishedListener = IntConsumer {
+            entity.height = it / 10f
+            root.renderPreview()
+        }
+
+
+        root.add(WLabel(Text.translatable("gui.dfroads.complex_sign_editor.add_element_label")).setVerticalAlignment(VerticalAlignment.BOTTOM), 0, 8)
+        root.add(typeTextButton, 0, 9, 1, 1)
+        root.add(typeArrowButton, 1, 9, 1, 1)
+        root.add(typeIconButton, 0, 10, 1, 1)
+        root.add(typeBoxButton, 1, 10, 1, 1)
         root.add(removeElementButton, 4, 7, 1, 1)
         root.add(loadPresetList, 12, 0, 7, 5)
         root.add(presetNameInput, 12, 5, 5, 1)
         root.add(saveAsPresetButton, 17, 5, 1, 1)
         root.add(applyButton, 18, 10, 1, 1)
+        root.add(signWidthInput, 0, 7, 3, 1)
+        root.add(signHeightInput, 3, 7, 3, 1)
         root.add(
             WLabel(Text.translatable("gui.dfroads.complex_sign_editor.color_picker_label")).setVerticalAlignment(VerticalAlignment.BOTTOM),
-            0,
+            2,
             8
         )
-        root.add(colorPicker, 0, 9)
+        root.add(colorPicker, 2, 9)
         root.add(borderColorToggle, 10, 8)
         root.add(borderColorPicker, 10, 9)
         root.add(
@@ -183,9 +223,21 @@ class ComplexRoadSignEditorGuiDescription(
     fun WGridPanel.renderPreview() {
         remove(previewPanel)
 
+        val shortestEdgePx = min(entity.width * previewWidthPx, entity.height * previewHeightPx)
+        var backgroundWidthPx = (entity.width * shortestEdgePx)
+        var backgroundHeightPx = (entity.height * shortestEdgePx)
+
+        val widthScaling = previewWidthPx / backgroundWidthPx
+        val heightScaling = previewHeightPx / backgroundHeightPx
+
+        val scaling = (if (widthScaling * backgroundHeightPx > previewHeightPx) heightScaling else widthScaling)
+
+        backgroundWidthPx *= scaling
+        backgroundHeightPx *= scaling
+
         previewPanel = WDragArea()
-        previewPanel.maxX = (entity.width * 90).toInt() + PADDING
-        previewPanel.maxY = (entity.height * 90).toInt() + PADDING
+        previewPanel.maxX = (backgroundWidthPx).toInt() + PADDING
+        previewPanel.maxY = (backgroundHeightPx).toInt() + PADDING
 
         val backgroundSprite =
             MinecraftClient.getInstance().guiAtlasManager.getSprite(DFRoads.id(Constants.complexSignTextures[entity.backgroundTexture]))
@@ -195,14 +247,8 @@ class ComplexRoadSignEditorGuiDescription(
             WNineSliceSprite(
                 DFRoads.id("textures/gui/sprites/${Constants.complexSignTextures[entity.backgroundTexture]}.png"),
                 backgroundSpriteScaling
-            ), canMove = false, canRotate = false, canResize = true, canIgnoreBoundaries = true
+            ), canMove = false, canRotate = false, canResize = false, canSelect = false, canIgnoreBoundaries = true
         )
-        backgroundTexture.resizeHandlers += { w, h ->
-            entity.width = w / 90f
-            entity.height = h / 90f
-            previewPanel.maxX = w + PADDING
-            previewPanel.maxY = h + PADDING
-        }
         backgroundTexture.selectHandlers += {
             colorPicker.enabled = false
             borderColorPicker.enabled = false
@@ -210,7 +256,7 @@ class ComplexRoadSignEditorGuiDescription(
         }
 
         previewPanel.add(
-            backgroundTexture, 0, 0, (entity.width * 90).toInt(), (entity.height * 90).toInt()
+            backgroundTexture, 0, 0, (backgroundWidthPx).toInt(), (backgroundHeightPx).toInt()
         )
 
         signElements.forEachIndexed { index, element ->
@@ -218,7 +264,7 @@ class ComplexRoadSignEditorGuiDescription(
                 TEXT -> {
                     val widget = WText(Text.of(element.text))
                     widget.setColor(element.color.rgb)
-                    val scalableWidget = WScalableWidget((1 / 9f) * (element.height * 90f) * 0.9f)
+                    val scalableWidget = WScalableWidget((1 / 9f * (element.height * shortestEdgePx * scaling).toInt() * 0.9f))
                     scalableWidget.add(widget)
                     scalableWidget
                 }
@@ -248,7 +294,7 @@ class ComplexRoadSignEditorGuiDescription(
             val draggable = WDraggableWidget(
                 widget,
                 outlineColor = if (element.borderColor != Color.NONE) element.borderColor.argb() else -1,
-                rotation = element.rotation, canIgnoreBoundaries = false
+                rotation = element.rotation,
             )
             draggable.selectHandlers += {
                 selectedElementIndex = index
@@ -279,27 +325,32 @@ class ComplexRoadSignEditorGuiDescription(
                 textInput.text = signElements[selectedElementIndex].text
             }
             draggable.moveHandlers += { x, y ->
-                element.x = (x - PADDING) / 90f
-                element.y = (y - PADDING) / 90f
+                element.x = (x - PADDING) / (shortestEdgePx * scaling)
+                element.y = (y - PADDING) / (shortestEdgePx * scaling)
             }
+
             draggable.resizeHandlers += { w, h ->
-                element.width = w / 90f
-                element.height = h / 90f
+                element.width = (w / (shortestEdgePx * scaling))
+                element.height = (h / (shortestEdgePx * scaling))
             }
             draggable.rotationHandlers += { rotation ->
                 element.rotation = rotation
             }
 
+            if (index == selectedElementIndex) {
+                draggable.isSelected = true
+            }
+
             previewPanel.add(
                 draggable,
-                (element.x * 90).toInt(),
-                (element.y * 90).toInt(),
-                if (element.type == TEXT) element.text.length * (1 / 9f * element.height * 90 * 6).toInt() else (element.width * 90).toInt(),
-                (element.height * 90).toInt()
+                ((element.x * shortestEdgePx * scaling)).toInt(),
+                ((element.y * shortestEdgePx * scaling)).toInt(),
+                if (element.type == TEXT) element.text.length * (1 / 9f * (element.height * shortestEdgePx * scaling) * 6).toInt() else (element.width * shortestEdgePx * scaling).toInt(),
+                (element.height * shortestEdgePx * scaling).toInt()
             )
         }
 
-        add(previewPanel, 0, 0, 11, 6)
+        add(previewPanel, 0, 0, previewWidth, previewHeight)
     }
 
     fun save() {

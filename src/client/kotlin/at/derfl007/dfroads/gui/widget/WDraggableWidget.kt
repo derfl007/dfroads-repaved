@@ -14,6 +14,7 @@ open class WDraggableWidget(
     val canMove: Boolean = true,
     val canResize: Boolean = true,
     val canRotate: Boolean = true,
+    val canSelect: Boolean = true,
     var outlineColor: Int = -1,
     var rotation: Int = 0, // in degrees
     val canIgnoreBoundaries: Boolean = false
@@ -68,8 +69,8 @@ open class WDraggableWidget(
 
     override fun onMouseUp(x: Int, y: Int, button: Int): InputResult? {
         if (!isResizing && !isDragging && !isRotating) {
-            isSelected = true
-            selectHandlers.forEach { it() }
+            isSelected = canSelect
+            if (canSelect) selectHandlers.forEach { it() }
         } else {
             if (isDragging) {
                 moveHandlers.forEach { it(this.x + PADDING, this.y + PADDING) }

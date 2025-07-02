@@ -4,9 +4,10 @@ import at.derfl007.dfroads.DFRoads
 import at.derfl007.dfroads.util.Color
 import io.github.cottonmc.cotton.gui.widget.WButton
 import io.github.cottonmc.cotton.gui.widget.WGridPanel
+import io.github.cottonmc.cotton.gui.widget.data.Insets
 import io.github.cottonmc.cotton.gui.widget.icon.TextureIcon
 
-class WColorPicker(activeButtonIndex: Int = 0, var columns: Int = 8) : WGridPanel() {
+class WColorPicker(activeButtonIndex: Int = 0, var columns: Int = 8, gaps: Int = 0) : WGridPanel() {
 
     var activeButtonIndex = activeButtonIndex
         set(value) {
@@ -26,6 +27,7 @@ class WColorPicker(activeButtonIndex: Int = 0, var columns: Int = 8) : WGridPane
         }
 
     init {
+        this.setInsets(Insets(1, 1))
         Color.colors.forEachIndexed { index, color ->
             val colorButton = WButton()
             colorButton.setIcon(TextureIcon(DFRoads.id("textures/block/road_white.png")).setColor(color.argb()))

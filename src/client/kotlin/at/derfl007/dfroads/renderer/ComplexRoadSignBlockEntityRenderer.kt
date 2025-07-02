@@ -46,7 +46,7 @@ class ComplexRoadSignBlockEntityRenderer(val context: BlockEntityRendererFactory
         matrices.translate(0.0, 0.0, -0.3125)
 
         // scale (centered) to size
-//        matrices.scale(entity.width, entity.height, 1f)
+        matrices.scale(1f, 1f, 1f)
 
         // move back down to bottom left
         matrices.translate(-entity.width / 2.0, -entity.height / 2.0, 0.0)

@@ -32,7 +32,6 @@ class WDragArea(var maxX: Int = 1, var maxY: Int = 1): WPlainPanel() {
     }
 
     override fun paint(context: DrawContext?, x: Int, y: Int, mouseX: Int, mouseY: Int) {
-        context?.drawBorder(x, y, width, height, 0xff0000ff.toInt()) // debug
         super.paint(context, x, y, mouseX, mouseY)
     }
 }

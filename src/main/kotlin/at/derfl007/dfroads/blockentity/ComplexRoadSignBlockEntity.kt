@@ -67,6 +67,11 @@ class ComplexRoadSignBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity
     override fun toInitialChunkDataNbt(registries: RegistryWrapper.WrapperLookup?): NbtCompound? = createNbt(registries)
 
 
+    companion object {
+        const val MAX_WIDTH = 7f
+        const val MAX_HEIGHT = 5f
+    }
+
     /**
      * @param type The type of element. Can be text, arrow, icon or container
      * @param color The hex code for the element's color (or background color for containers)
