@@ -122,7 +122,7 @@ abstract class StairLikeBlock(settings: Settings) : HorizontalFacingBlock(settin
         return shapeMap[when (state[SHAPE]) {
             StairShape.STRAIGHT, StairShape.INNER_LEFT, StairShape.OUTER_RIGHT -> direction
             StairShape.OUTER_LEFT -> direction.rotateYCounterclockwise()
-            StairShape.INNER_RIGHT -> direction.rotateYCounterclockwise()
+            StairShape.INNER_RIGHT -> direction.opposite.rotateYCounterclockwise()
         }]
     }
 
