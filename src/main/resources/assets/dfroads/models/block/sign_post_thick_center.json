@@ -1,0 +1,23 @@
+{
+	"format_version": "1.21.6",
+	"credit": "Made with Blockbench",
+	"textures": {
+		"0": "dfroads:block/metal",
+		"particle": "dfroads:block/metal"
+	},
+	"elements": [
+		{
+			"name": "Cube",
+			"from": [4, 4, 4],
+			"to": [12, 12, 12],
+			"faces": {
+				"north": {"uv": [0, 0, 8, 8], "texture": "#0"},
+				"east": {"uv": [0, 0, 8, 8], "texture": "#0"},
+				"south": {"uv": [0, 0, 8, 8], "texture": "#0"},
+				"west": {"uv": [0, 0, 8, 8], "texture": "#0"},
+				"up": {"uv": [0, 0, 8, 8], "texture": "#0"},
+				"down": {"uv": [0, 0, 8, 8], "texture": "#0"}
+			}
+		}
+	]
+}

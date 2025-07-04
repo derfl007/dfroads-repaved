@@ -1,21 +1,23 @@
 {
-  "textures": {
-    "0": "dfroads:block/metal",
-    "particle": "dfroads:block/metal"
-  },
-  "elements": [
-    {
-      "name": "Cube",
-      "from": [ 6.001, -5.999, 6.001 ],
-      "to": [ 9.999, 5.999, 9.999 ],
-      "faces": {
-        "north": { "texture": "#0", "uv": [ 0.0, 0.0, 2.0, 7.0 ] },
-        "east": { "texture": "#0", "uv": [ 0.0, 0.0, 2.0, 7.0 ] },
-        "south": { "texture": "#0", "uv": [ 0.0, 0.0, 2.0, 7.0 ] },
-        "west": { "texture": "#0", "uv": [ 0.0, 0.0, 2.0, 7.0 ] },
-        "up": { "texture": "#0", "uv": [ 0.0, 0.0, 2.0, 2.0 ] },
-        "down": { "texture": "#0", "uv": [ 0.0, 0.0, 2.0, 2.0 ] }
-      }
-    }
-  ]
+	"format_version": "1.21.6",
+	"credit": "Made with Blockbench",
+	"textures": {
+		"0": "dfroads:block/metal",
+		"particle": "dfroads:block/metal"
+	},
+	"elements": [
+		{
+			"name": "Cube",
+			"from": [6.05, -5.95, 6.05],
+			"to": [9.95, 5.95, 9.95],
+			"faces": {
+				"north": {"uv": [0, 0, 2, 7], "texture": "#0"},
+				"east": {"uv": [0, 0, 2, 7], "texture": "#0"},
+				"south": {"uv": [0, 0, 2, 7], "texture": "#0"},
+				"west": {"uv": [0, 0, 2, 7], "texture": "#0"},
+				"up": {"uv": [0, 0, 2, 2], "texture": "#0"},
+				"down": {"uv": [0, 0, 2, 2], "texture": "#0"}
+			}
+		}
+	]
 }

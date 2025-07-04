@@ -29,6 +29,7 @@ object BlockRegistry {
     lateinit var LED_SIGN_BLOCK: LedSignBlock
     lateinit var COMPLEX_ROAD_SIGN_BLOCK: ComplexRoadSignBlock
     lateinit var SIGN_POST_BLOCK: SignPostBlock
+    lateinit var SIGN_POST_THICK_BLOCK: SignPostThickBlock
     lateinit var TRAFFIC_LIGHT_BLOCK: TrafficLightBlock
     lateinit var PEDESTRIAN_TRAFFIC_LIGHT_BLOCK: PedestrianTrafficLightBlock
     lateinit var GUARD_RAIL_BLOCK: GuardRailBlock
@@ -75,6 +76,9 @@ object BlockRegistry {
         )
         SIGN_POST_BLOCK = register(
             "sign_post_block", ::SignPostBlock, true, Settings.copy(Blocks.IRON_BLOCK)
+        )
+        SIGN_POST_THICK_BLOCK = register(
+            "sign_post_thick_block", ::SignPostThickBlock, true, Settings.copy(Blocks.IRON_BLOCK)
         )
         TRAFFIC_LIGHT_BLOCK = register(
             "traffic_light_block", ::TrafficLightBlock, true
