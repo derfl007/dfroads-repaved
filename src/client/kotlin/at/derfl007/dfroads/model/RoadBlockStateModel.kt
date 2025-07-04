@@ -187,7 +187,8 @@ class RoadBlockStateModel(
         val slopeHeight: Float
     )
 
-    class Unbaked(val topHeight: Float, val bottomHeight: Float, val slopeHeight: Float) : CustomUnbakedBlockStateModel,
+    class Unbaked(val topHeight: Float, val bottomHeight: Float, val slopeHeight: Float, val baseTexture: Identifier = Identifier.of(
+        "dfroads", "block/road")) : CustomUnbakedBlockStateModel,
         SimpleModel {
 
         companion object {
@@ -197,8 +198,8 @@ class RoadBlockStateModel(
                     Identifier.of("dfroads", "block/${roadTextures[it]}")
                 )
             }
-            val ROAD_SPRITE_ID =
-                SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, Identifier.of("dfroads", "block/road"))
+            fun roadSpriteId(baseTexture: Identifier) =
+                SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, baseTexture)
         }
 
         override fun codec(): MapCodec<out CustomUnbakedBlockStateModel?>? {
@@ -209,7 +210,7 @@ class RoadBlockStateModel(
             val sprites = Array(SPRITE_IDS.size) {
                 baker.spriteGetter[SPRITE_IDS[it], this]
             }
-            val roadSprite = baker.spriteGetter[ROAD_SPRITE_ID, this]
+            val roadSprite = baker.spriteGetter[roadSpriteId(baseTexture), this]
 
             return RoadBlockStateModel(sprites, roadSprite, topHeight, bottomHeight, slopeHeight)
         }

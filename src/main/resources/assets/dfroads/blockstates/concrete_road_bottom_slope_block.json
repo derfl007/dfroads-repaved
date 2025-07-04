@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "fabric:type": "dfroads:block/concrete_road_bottom_slope_block"
+    }
+  }
+}

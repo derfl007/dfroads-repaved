@@ -1,0 +1,6 @@
+{
+  "parent": "dfroads:block/road_block_full_item",
+  "textures": {
+    "0": "block/light_gray_concrete"
+  }
+}

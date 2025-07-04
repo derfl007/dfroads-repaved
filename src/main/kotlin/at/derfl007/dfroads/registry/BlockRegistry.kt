@@ -25,6 +25,11 @@ object BlockRegistry {
     lateinit var ROAD_FULL_SLOPE_BLOCK: RoadFullSlopeBlock
     lateinit var ROAD_TOP_SLOPE_BLOCK: RoadTopSlopeBlock
     lateinit var ROAD_BOTTOM_SLOPE_BLOCK: RoadBottomSlopeBlock
+    lateinit var CONCRETE_ROAD_BLOCK: RoadFullBlock
+    lateinit var CONCRETE_ROAD_SLAB_BLOCK: RoadSlabBlock
+    lateinit var CONCRETE_ROAD_FULL_SLOPE_BLOCK: RoadFullSlopeBlock
+    lateinit var CONCRETE_ROAD_TOP_SLOPE_BLOCK: RoadTopSlopeBlock
+    lateinit var CONCRETE_ROAD_BOTTOM_SLOPE_BLOCK: RoadBottomSlopeBlock
     lateinit var ROAD_SIGN_BLOCK: RoadSignBlock
     lateinit var LED_SIGN_BLOCK: LedSignBlock
     lateinit var COMPLEX_ROAD_SIGN_BLOCK: ComplexRoadSignBlock
@@ -61,6 +66,24 @@ object BlockRegistry {
         )
         ROAD_BOTTOM_SLOPE_BLOCK = register(
             "road_bottom_slope_block",
+            { settings -> RoadBottomSlopeBlock(settings) },
+            true,
+            roadBlockSettingsTransparent
+        )
+        CONCRETE_ROAD_BLOCK = register(
+            "concrete_road_full_block", { settings -> RoadFullBlock(settings) }, true, roadBlockSettingsSolid
+        )
+        CONCRETE_ROAD_SLAB_BLOCK = register(
+            "concrete_road_slab_block", { settings -> RoadSlabBlock(settings) }, true, roadBlockSettingsTransparent
+        )
+        CONCRETE_ROAD_FULL_SLOPE_BLOCK = register(
+            "concrete_road_full_slope_block", { settings -> RoadFullSlopeBlock(settings) }, true, roadBlockSettingsTransparent
+        )
+        CONCRETE_ROAD_TOP_SLOPE_BLOCK = register(
+            "concrete_road_top_slope_block", { settings -> RoadTopSlopeBlock(settings) }, true, roadBlockSettingsTransparent
+        )
+        CONCRETE_ROAD_BOTTOM_SLOPE_BLOCK = register(
+            "concrete_road_bottom_slope_block",
             { settings -> RoadBottomSlopeBlock(settings) },
             true,
             roadBlockSettingsTransparent

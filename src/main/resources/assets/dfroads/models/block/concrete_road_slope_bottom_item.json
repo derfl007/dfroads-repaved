@@ -1,0 +1,6 @@
+{
+  "parent": "dfroads:block/road_slope_bottom_item",
+  "textures": {
+    "0": "block/light_gray_concrete"
+  }
+}

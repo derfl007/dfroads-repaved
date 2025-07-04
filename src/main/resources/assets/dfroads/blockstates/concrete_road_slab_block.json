@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "fabric:type": "dfroads:block/concrete_road_slab_block"
+    }
+  }
+}
