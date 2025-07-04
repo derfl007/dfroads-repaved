@@ -14,19 +14,19 @@ object ModelRegistry {
 
         CustomUnbakedBlockStateModel.register(
             DFRoads.id("block/road_full_block"),
-            MapCodec.unit(RoadBlockStateModel.Unbaked(0.9999f, 0.0001f, 0.9999f))
+            MapCodec.unit(RoadBlockStateModel.Unbaked(1f, 0f, 1f))
         )
         CustomUnbakedBlockStateModel.register(
             DFRoads.id("block/road_full_slope_block"),
-            MapCodec.unit(RoadBlockStateModel.Unbaked(0.9999f, 0.0001f, 0.0001f))
+            MapCodec.unit(RoadBlockStateModel.Unbaked(1f, 0f, 0f))
         )
         CustomUnbakedBlockStateModel.register(
             DFRoads.id("block/road_top_slope_block"),
-            MapCodec.unit(RoadBlockStateModel.Unbaked(0.9999f, 0.0001f, 0.5f))
+            MapCodec.unit(RoadBlockStateModel.Unbaked(1f, 0f, 0.5f))
         )
         CustomUnbakedBlockStateModel.register(
             DFRoads.id("block/road_bottom_slope_block"),
-            MapCodec.unit(RoadBlockStateModel.Unbaked(0.5f, 0.0001f, 0.0001f))
+            MapCodec.unit(RoadBlockStateModel.Unbaked(0.5f, 0f, 0f))
         )
         CustomUnbakedBlockStateModel.register(
             DFRoads.id("block/road_slab_block"),
@@ -35,7 +35,7 @@ object ModelRegistry {
 
 
         BlockRenderLayerMap.INSTANCE.putBlocks(
-            RenderLayer.getCutout(), BlockRegistry.ROAD_BLOCK, BlockRegistry.ROAD_FULL_SLOPE_BLOCK,
+            RenderLayer.getCutoutMipped(), BlockRegistry.ROAD_FULL_SLOPE_BLOCK,
             BlockRegistry.ROAD_TOP_SLOPE_BLOCK, BlockRegistry.ROAD_BOTTOM_SLOPE_BLOCK, BlockRegistry.ROAD_SLAB_BLOCK
         )
     }

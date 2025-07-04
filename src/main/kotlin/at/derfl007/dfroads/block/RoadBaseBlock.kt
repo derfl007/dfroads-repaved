@@ -84,9 +84,8 @@ private val ROAD_BLOCK_SHAPE =
 class RoadFullBlock(settings: Settings) : RoadBaseBlock(ROAD_BLOCK_SHAPE, settings) {
 
     override fun isTransparent(state: BlockState?) = false
-    override fun isShapeFullCube(state: BlockState?, world: BlockView?, pos: BlockPos?) = true
+    override fun isShapeFullCube(state: BlockState?, world: BlockView?, pos: BlockPos?) = false
     override fun hasSidedTransparency(state: BlockState?) = false
-
 
     override fun getCodec(): MapCodec<out HorizontalFacingBlock?> = createCodec { settings -> RoadFullBlock(settings) }
 }

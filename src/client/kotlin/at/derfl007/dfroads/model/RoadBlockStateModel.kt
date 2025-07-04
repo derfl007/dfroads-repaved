@@ -70,7 +70,7 @@ class RoadBlockStateModel(
     }
 
     private fun drawBack(emitter: QuadEmitter, facing: Direction, sprite: Sprite, material: RenderMaterial) {
-        emitter.square(facing, 0.0001f, bottomHeight, 0.9999f, topHeight, 0.0001f)
+        emitter.square(facing, 0f, bottomHeight, 1f, topHeight, 0f)
             .spriteBake(sprite, BAKE_LOCK_UV)
             .material(material)
             .cullFace(null)
@@ -78,7 +78,7 @@ class RoadBlockStateModel(
     }
 
     private fun drawFront(emitter: QuadEmitter, facing: Direction, sprite: Sprite, material: RenderMaterial) {
-        emitter.square(facing.opposite, 0.0001f, bottomHeight, 0.9999f, slopeHeight, 0.0001f)
+        emitter.square(facing.opposite, 0f, bottomHeight, 1f, slopeHeight, 0f)
             .spriteBake(sprite, BAKE_LOCK_UV)
             .material(material)
             .cullFace(null)
@@ -86,7 +86,7 @@ class RoadBlockStateModel(
     }
 
     private fun drawLeft(emitter: QuadEmitter, facing: Direction, sprite: Sprite, material: RenderMaterial) {
-        emitter.square(facing.rotateYCounterclockwise(), 0.0001f, bottomHeight, 0.9999f, topHeight, 0.0001f)
+        emitter.square(facing.rotateYCounterclockwise(), 0f, bottomHeight, 1f, topHeight, 0f)
 
         val posTopRight = emitter.copyPos(3, Vector3f())
         posTopRight.y = slopeHeight
@@ -99,7 +99,7 @@ class RoadBlockStateModel(
     }
 
     private fun drawRight(emitter: QuadEmitter, facing: Direction, sprite: Sprite, material: RenderMaterial) {
-        emitter.square(facing.rotateYClockwise(), 0.0001f, bottomHeight, 0.9999f, topHeight, 0.0001f)
+        emitter.square(facing.rotateYClockwise(), 0f, bottomHeight, 1f, topHeight, 0f)
 
         val posTopLeft = emitter.copyPos(0, Vector3f())
         posTopLeft.y = slopeHeight
@@ -112,7 +112,7 @@ class RoadBlockStateModel(
     }
 
     private fun drawTop(emitter: QuadEmitter, facing: Direction, sprite: Sprite, material: RenderMaterial) {
-        emitter.square(Direction.UP, 0.0001f, 0.0001f, 0.9999f, 0.9999f, 1 - topHeight)
+        emitter.square(Direction.UP, 0f, 0f, 1f, 1f, 1 - topHeight)
 
         val bottomRightIndex = 3 - ((facing.opposite.horizontalQuarterTurns + 1) % 4)
         val bottomLeftIndex = 3 - ((facing.opposite.horizontalQuarterTurns + 2) % 4)
@@ -130,14 +130,14 @@ class RoadBlockStateModel(
     }
 
     private fun drawSurface(emitter: QuadEmitter, facing: Direction, sprite: Sprite, material: RenderMaterial) {
-        emitter.square(Direction.UP, 0.0001f, 0.0001f, 0.9999f, 0.9999f, 1 - topHeight - 0.0001f)
+        emitter.square(Direction.UP, 0f, 0f, 1f, 1f, 1 - topHeight - 0.01f)
 
         val bottomRightIndex = 3 - ((facing.opposite.horizontalQuarterTurns + 1) % 4)
         val bottomLeftIndex = 3 - ((facing.opposite.horizontalQuarterTurns + 2) % 4)
         val posBottomRight = emitter.copyPos(bottomRightIndex, Vector3f())
         val posBottomLeft = emitter.copyPos(bottomLeftIndex, Vector3f())
-        posBottomLeft.y = slopeHeight + 0.0001f
-        posBottomRight.y = slopeHeight + 0.0001f
+        posBottomLeft.y = slopeHeight + 0.01f
+        posBottomRight.y = slopeHeight + 0.01f
 
         emitter.pos(bottomRightIndex, posBottomRight)
             .pos(bottomLeftIndex, posBottomLeft)
