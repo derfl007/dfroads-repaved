@@ -93,7 +93,7 @@ open class RoadSignBlock(settings: Settings) : SignPostBlock(settings, false), B
         val signShape = getSignShape(minX, minY, maxX, maxY)
         val postShape = getPostShape()
         val outlineShape = VoxelShapes.union(signShape, postShape)
-        return VoxelShapes.createHorizontalFacingShapeMap(outlineShape)[facing.opposite]
+        return VoxelShapes.union(super.getOutlineShape(state, world, pos, context), VoxelShapes.createHorizontalFacingShapeMap(outlineShape)[facing.opposite])
     }
 
     open fun getSignShape(minX: Double, minY: Double, maxX: Double, maxY: Double): VoxelShape =

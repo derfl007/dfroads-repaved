@@ -109,12 +109,12 @@ open class SignPostBlock(settings: Settings, val shouldFrontConnect: Boolean = t
         context: ShapeContext
     ): VoxelShape? {
         val center = createCuboidShape(6.0, 6.0, 6.0, 10.0, 10.0, 10.0)
-        val up = createCuboidShape(6.0, 10.0, 6.0, 10.0, 22.0, 10.0)
-        val down = createCuboidShape(6.0, -6.0, 6.0, 10.0, 6.0, 10.0)
-        val north = createCuboidShape(6.0, 6.0, -6.0, 10.0, 10.0, 6.0)
-        val south = createCuboidShape(6.0, 6.0, 10.0, 10.0, 10.0, 22.0)
-        val east = createCuboidShape(10.0, 6.0, 6.0, 22.0, 10.0, 10.0)
-        val west = createCuboidShape(-6.0, 6.0, 6.0, 6.0, 10.0, 10.0)
+        val up = createCuboidShape(6.0, 10.0, 6.0, 10.0, 16.0, 10.0)
+        val down = createCuboidShape(6.0, 0.0, 6.0, 10.0, 6.0, 10.0)
+        val north = createCuboidShape(6.0, 6.0, 0.0, 10.0, 10.0, 6.0)
+        val south = createCuboidShape(6.0, 6.0, 10.0, 10.0, 10.0, 16.0)
+        val east = createCuboidShape(10.0, 6.0, 6.0, 16.0, 10.0, 10.0)
+        val west = createCuboidShape(0.0, 6.0, 6.0, 6.0, 10.0, 10.0)
 
         var full = center
 

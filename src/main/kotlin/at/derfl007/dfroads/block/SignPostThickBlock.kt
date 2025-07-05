@@ -17,12 +17,12 @@ class SignPostThickBlock(settings: Settings) : SignPostBlock(settings) {
         context: ShapeContext
     ): VoxelShape? {
         val center = createCuboidShape(4.0, 4.0, 4.0, 12.0, 12.0, 12.0)
-        val up = createCuboidShape(4.0, 12.0, 4.0, 12.0, 22.0, 12.0)
-        val down = createCuboidShape(4.0, -4.0, 4.0, 12.0, 4.0, 12.0)
-        val north = createCuboidShape(4.0, 4.0, -4.0, 12.0, 12.0, 4.0)
-        val south = createCuboidShape(4.0, 4.0, 12.0, 12.0, 12.0, 22.0)
-        val east = createCuboidShape(12.0, 4.0, 4.0, 22.0, 12.0, 12.0)
-        val west = createCuboidShape(-4.0, 4.0, 4.0, 4.0, 12.0, 12.0)
+        val up = createCuboidShape(4.0, 12.0, 4.0, 12.0, 16.0, 12.0)
+        val down = createCuboidShape(4.0, 0.0, 4.0, 12.0, 4.0, 12.0)
+        val north = createCuboidShape(4.0, 4.0, 0.0, 12.0, 12.0, 4.0)
+        val south = createCuboidShape(4.0, 4.0, 12.0, 12.0, 12.0, 16.0)
+        val east = createCuboidShape(12.0, 4.0, 4.0, 16.0, 12.0, 12.0)
+        val west = createCuboidShape(0.0, 4.0, 4.0, 4.0, 12.0, 12.0)
 
         var full = center
 

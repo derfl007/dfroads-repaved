@@ -22,6 +22,7 @@ import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.shape.VoxelShape
+import net.minecraft.util.shape.VoxelShapes
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
@@ -83,7 +84,7 @@ open class TrafficLightBlock(settings: Settings): SignPostBlock(settings, false)
         pos: BlockPos,
         context: ShapeContext
     ): VoxelShape {
-        return createCuboidShape(4.0, 0.0, 4.0, 12.0, 16.0, 12.0)
+        return VoxelShapes.union(createCuboidShape(4.0, 0.0, 4.0, 12.0, 16.0, 12.0), super.getOutlineShape(state, world, pos, context))
     }
 
     override fun getCodec(): MapCodec<out HorizontalFacingBlock?>? = createCodec { settings -> TrafficLightBlock(settings) }
