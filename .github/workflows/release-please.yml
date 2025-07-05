@@ -50,21 +50,22 @@ jobs:
           manifest-file: '.release-please-manifest.json'
 
       # Anything after here will only run after a release was created
+      - name: checkout repository
+        if: ${{ steps.release.outputs.release_created }}
+        uses: actions/checkout@v4
       - name: Download artifacts from build
         if: ${{ steps.release.outputs.release_created }}
         uses: actions/download-artifact@v4
         with:
           name: jar
-      - name: checkout repository
-        if: ${{ steps.release.outputs.release_created }}
-        uses: actions/checkout@v4
+          path: build/libs
       - name: Upload Release Artifact
         if: ${{ steps.release.outputs.release_created }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           shopt -s extglob
-          for i in `ls -pd !(*-@(sources|javadoc|dev)).jar` ; do
+          for i in `ls -pd build/libs/!(*-@(sources|javadoc|dev)).jar` ; do
             gh release upload ${{ steps.release.outputs.tag_name }} $i
           done
       - name: Publish to modrinth and curseforge
@@ -73,4 +74,4 @@ jobs:
         with:
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-          files: "!(*-@(dev|sources|javadoc)).jar"
+          files: "build/libs/!(*-@(dev|sources|javadoc)).jar"
