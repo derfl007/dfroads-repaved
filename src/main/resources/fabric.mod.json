@@ -47,5 +47,11 @@
 		"fabric-api": "*",
 		"fabric-language-kotlin": "*"
 	},
-	"accessWidener": "dfroads.accesswidener"
+	"accessWidener": "dfroads.accesswidener",
+	"custom": {
+		"mc-publish": {
+			"modrinth": "Bb502Gqg",
+			"curseforge": "307507"
+		}
+	}
 }

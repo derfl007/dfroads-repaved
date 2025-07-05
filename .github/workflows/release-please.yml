@@ -1,0 +1,62 @@
+# Release please workflow for pushes to main
+# Includes mc-publish if a release is created
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+name: release-please
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+      - name: validate gradle wrapper
+        uses: gradle/actions/wrapper-validation@v4
+      - name: setup jdk
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'microsoft'
+      - name: make gradle wrapper executable
+        run: chmod +x ./gradlew
+      - name: build
+        run: ./gradlew build
+      - name: capture build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: jar
+          path: build/libs/
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          # doesn't use a custom token since we don't want the build workflow to run on release-please PRs
+          release-type: java
+          manifest-file: '.release-please-manifest.json'
+      - name: Download artifacts from build
+        if: ${{ steps.release.outputs.release_created }} # no point downloading if no release was created
+        uses: actions/download-artifact@v4
+        with:
+          name: jar
+      - name: Upload Release Artifact
+        if: ${{ steps.release.outputs.release_created }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload ${{ steps.release.outputs.tag_name }} ./build/libs/!(*-@(dev|sources|javadoc)).jar
+      - name: Publish to modrinth and curseforge
+        uses: Kir-Antipov/mc-publish@v3.3
+        if: ${{ steps.release.outputs.release_created }}
+        with:
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+          files: ./build/libs/!(*-@(dev|sources|javadoc)).jar
