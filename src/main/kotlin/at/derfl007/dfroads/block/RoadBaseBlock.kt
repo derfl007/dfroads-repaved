@@ -20,7 +20,11 @@ abstract class RoadBaseBlock(private val outlineShape: VoxelShape, settings: Set
     settings
 ) {
     init {
-        defaultState = stateManager.defaultState.with(FACING, Direction.NORTH).with(COLOR, Color.WHITE).with(TEXTURE_FACING, Direction.NORTH).with(TEXTURE, RoadTexture.ROAD_EMPTY)
+        defaultState = stateManager.defaultState
+            .with(FACING, Direction.NORTH)
+            .with(COLOR, Color.WHITE)
+            .with(TEXTURE_FACING, Direction.NORTH)
+            .with(TEXTURE, RoadTexture.ROAD_EMPTY)
     }
 
     override fun appendProperties(builder: StateManager.Builder<Block, BlockState>) {

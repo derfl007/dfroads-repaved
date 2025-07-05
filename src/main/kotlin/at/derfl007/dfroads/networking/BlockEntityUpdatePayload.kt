@@ -33,11 +33,15 @@ class BlockEntityUpdatePayload(val pos: BlockPos, val blockEntityType: BlockEnti
 
         val ServerReceiverHandler =
             ServerPlayNetworking.PlayPayloadHandler { payload: BlockEntityUpdatePayload, context ->
-                context.player().world?.getBlockEntity(payload.pos, payload.blockEntityType)?.ifPresent { entity ->
+                val player = context.player()
+                val world = player.world!!
+                world.getBlockEntity(payload.pos, payload.blockEntityType)?.ifPresent { entity ->
                     entity.read(
                         payload.nbt,
-                        RegistryWrapper.WrapperLookup.of(context.player().registryManager.stream())
+                        RegistryWrapper.WrapperLookup.of(player.registryManager.stream())
                     )
+                    val state = world.getBlockState(payload.pos)
+                    world.updateListeners(payload.pos, state, state, 0);
                 }
             }
     }
