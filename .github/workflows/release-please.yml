@@ -68,4 +68,4 @@ jobs:
         with:
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-          files: !(*-@(dev|sources|javadoc)).jar
+          files: "!(*-@(dev|sources|javadoc)).jar"
