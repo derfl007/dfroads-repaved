@@ -43,7 +43,7 @@ jobs:
         id: release
         with:
           # doesn't use a custom token since we don't want the build workflow to run on release-please PRs
-          release-type: java
+          release-type: simple
           manifest-file: '.release-please-manifest.json'
       - name: Download artifacts from build
         if: ${{ steps.release.outputs.release_created }} # no point downloading if no release was created
