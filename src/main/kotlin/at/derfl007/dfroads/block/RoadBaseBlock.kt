@@ -1,6 +1,5 @@
 package at.derfl007.dfroads.block
 
-import at.derfl007.dfroads.Constants.roadTextures
 import at.derfl007.dfroads.util.Color
 import com.mojang.serialization.MapCodec
 import net.minecraft.block.Block
@@ -10,7 +9,7 @@ import net.minecraft.block.ShapeContext
 import net.minecraft.item.ItemPlacementContext
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.EnumProperty
-import net.minecraft.state.property.IntProperty
+import net.minecraft.util.StringIdentifiable
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.shape.VoxelShape
@@ -21,7 +20,7 @@ abstract class RoadBaseBlock(private val outlineShape: VoxelShape, settings: Set
     settings
 ) {
     init {
-        defaultState = stateManager.defaultState.with(FACING, Direction.NORTH).with(COLOR, Color.WHITE).with(TEXTURE_FACING, Direction.NORTH).with(TEXTURE, 0)
+        defaultState = stateManager.defaultState.with(FACING, Direction.NORTH).with(COLOR, Color.WHITE).with(TEXTURE_FACING, Direction.NORTH).with(TEXTURE, RoadTexture.ROAD_EMPTY)
     }
 
     override fun appendProperties(builder: StateManager.Builder<Block, BlockState>) {
@@ -45,13 +44,56 @@ abstract class RoadBaseBlock(private val outlineShape: VoxelShape, settings: Set
     }
 
     override fun getPlacementState(ctx: ItemPlacementContext?): BlockState? {
-        return super.getPlacementState(ctx)?.with(FACING, ctx?.horizontalPlayerFacing)?.with(COLOR, Color.WHITE)?.with(TEXTURE_FACING, ctx?.horizontalPlayerFacing)?.with(TEXTURE, 0)
+        return super.getPlacementState(ctx)?.with(FACING, ctx?.horizontalPlayerFacing)?.with(COLOR, Color.WHITE)?.with(TEXTURE_FACING, ctx?.horizontalPlayerFacing)?.with(TEXTURE, RoadTexture.ROAD_EMPTY)
+    }
+
+    // Note that the enum value names need to be uppercase versions of the texture names (without .png)
+    enum class RoadTexture(): StringIdentifiable {
+        ROAD_EMPTY,
+        ROAD_ARROW_S,
+        ROAD_ARROW_L,
+        ROAD_ARROW_R,
+        ROAD_ARROW_SL,
+        ROAD_ARROW_SR,
+        ROAD_ARROW_RL,
+        ROAD_ARROW_SRL,
+        ROAD_CROSSWALK,
+        ROAD_CROSSWALK_DIAGONAL_CENTER,
+        ROAD_CROSSWALK_DIAGONAL_END,
+        ROAD_CROSSWALK_DIAGONAL_SIDE,
+        ROAD_LINE_SINGLE,
+        ROAD_LINE_SINGLE_CORNER,
+        ROAD_LINE_SINGLE_T_SHAPE,
+        ROAD_LINE_SINGLE_CROSS,
+        ROAD_LINE_MERGE,
+        ROAD_LINE_DOUBLE,
+        ROAD_LINE_DOUBLE_INNER,
+        ROAD_LINE_DOUBLE_DIAGONAL,
+        ROAD_LINE_HALF_DOUBLE,
+        ROAD_LINE_HALF_DOUBLE_INNER,
+        ROAD_LINE_HALF_DOUBLE_OUTER,
+        ROAD_LINE_HALF_DOUBLE_INNER_DIAGONAL,
+        ROAD_LINE_HALF_DOUBLE_OUTER_DIAGONAL,
+        ROAD_LINE_SPLIT_RIGHT,
+        ROAD_LINE_SPLIT_LEFT,
+        ROAD_LINE_DIAGONAL,
+        ROAD_WHITE,
+        ROAD_WHITE_HALF,
+        ROAD_WHITE_QUARTER;
+
+        override fun toString() = super.toString().lowercase()
+
+        override fun asString() = toString()
+
+        companion object {
+            val CODEC = StringIdentifiable.createCodec(RoadTexture::values);
+        }
     }
 
     companion object {
         val COLOR: EnumProperty<Color> = EnumProperty.of("color", Color::class.java)
         val TEXTURE_FACING: EnumProperty<Direction> = EnumProperty.of("texture_facing", Direction::class.java, Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST)
-        val TEXTURE: IntProperty = IntProperty.of("texture", 0, roadTextures.size - 1)
+        val TEXTURE: EnumProperty<RoadTexture> = EnumProperty.of("texture", RoadTexture::class.java)
 
         private const val FULL_HEIGHT = 16f / 16f
         const val MIN_Y = FULL_HEIGHT - 1f

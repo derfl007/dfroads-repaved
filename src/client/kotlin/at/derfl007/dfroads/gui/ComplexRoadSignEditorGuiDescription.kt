@@ -26,6 +26,7 @@ import net.minecraft.nbt.NbtCompound
 import net.minecraft.text.Text
 import net.minecraft.util.math.BlockPos
 import java.util.function.IntConsumer
+import kotlin.math.max
 import kotlin.math.min
 
 @Suppress("UnstableApiUsage")
@@ -99,27 +100,34 @@ class ComplexRoadSignEditorGuiDescription(
 
         typeTextButton.setOnClick {
             signElements.add(SignElement(type = TEXT, text = "enter text", width = 0.2f, height = 0.2f))
+            selectedElementIndex = signElements.size - 1
             root.renderPreview()
         }
 
         typeArrowButton.setOnClick {
             signElements.add(SignElement(type = ARROW, width = 0.2f, height = 0.2f))
+            selectedElementIndex = signElements.size - 1
             root.renderPreview()
         }
 
         typeIconButton.setOnClick {
             signElements.add(SignElement(type = ICON, width = 0.2f, height = 0.2f))
+            selectedElementIndex = signElements.size - 1
             root.renderPreview()
 
         }
 
         typeBoxButton.setOnClick {
             signElements.add(SignElement(type = BOX, width = 0.2f, height = 0.2f))
+            selectedElementIndex = signElements.size - 1
             root.renderPreview()
         }
 
         removeElementButton.setOnClick {
             signElements.removeAt(selectedElementIndex)
+            root.remove(textInput)
+            root.remove(iconTexturePicker)
+            selectedElementIndex = max(0, signElements.size - 1)
             if (signElements.isEmpty()) {
                 colorPicker.enabled = false
                 borderColorPicker.enabled = false
@@ -166,7 +174,7 @@ class ComplexRoadSignEditorGuiDescription(
         }
 
         backgroundTexturePicker.addOnClickHandlers {
-            entity.backgroundTexture = it
+            entity.backgroundTexture = Constants.complexSignTextures[it]
             root.renderPreview()
         }
 
@@ -196,7 +204,7 @@ class ComplexRoadSignEditorGuiDescription(
         root.add(typeArrowButton, 1, 9, 1, 1)
         root.add(typeIconButton, 0, 10, 1, 1)
         root.add(typeBoxButton, 1, 10, 1, 1)
-        root.add(removeElementButton, 4, 7, 1, 1)
+        root.add(removeElementButton, 0, 6, 1, 1)
         root.add(loadPresetList, 12, 0, 7, 5)
         root.add(presetNameInput, 12, 5, 5, 1)
         root.add(saveAsPresetButton, 17, 5, 1, 1)
@@ -240,12 +248,12 @@ class ComplexRoadSignEditorGuiDescription(
         previewPanel.maxY = (backgroundHeightPx).toInt() + PADDING
 
         val backgroundSprite =
-            MinecraftClient.getInstance().guiAtlasManager.getSprite(DFRoads.id(Constants.complexSignTextures[entity.backgroundTexture]))
+            MinecraftClient.getInstance().guiAtlasManager.getSprite(DFRoads.id(entity.backgroundTexture))
         val backgroundSpriteScaling = MinecraftClient.getInstance().guiAtlasManager.getScaling(backgroundSprite)
 
         val backgroundTexture = WDraggableWidget(
             WNineSliceSprite(
-                DFRoads.id("textures/gui/sprites/${Constants.complexSignTextures[entity.backgroundTexture]}.png"),
+                DFRoads.id("textures/gui/sprites/${entity.backgroundTexture}.png"),
                 backgroundSpriteScaling
             ), canMove = false, canRotate = false, canResize = false, canSelect = false, canIgnoreBoundaries = true
         )
@@ -303,14 +311,14 @@ class ComplexRoadSignEditorGuiDescription(
 
                 if (signElement.type == TEXT) {
                     textInput.host = this@ComplexRoadSignEditorGuiDescription
-                    add(textInput, 5, 7, 4, 1)
+                    add(textInput, 1, 6, 6, 1)
                 } else {
                     remove(textInput)
                 }
 
                 if (signElement.type == ICON) {
                     iconTexturePicker.host = this@ComplexRoadSignEditorGuiDescription
-                    add(iconTexturePicker, 5, 7, 4, 1)
+                    add(iconTexturePicker, 1, 6, 4, 1)
                 } else {
                     remove(iconTexturePicker)
                 }
@@ -358,7 +366,7 @@ class ComplexRoadSignEditorGuiDescription(
         nbt.copyFromCodec(SignElement.CODEC.listOf().fieldOf("elements"), signElements)
         nbt.putFloat("width", entity.width)
         nbt.putFloat("height", entity.height)
-        nbt.putInt("backgroundTexture", entity.backgroundTexture)
+        nbt.putString("backgroundTexture", entity.backgroundTexture)
         entity.elements = signElements
         entity.markDirty()
         ClientPlayNetworking.send(BlockEntityUpdatePayload(pos, entityType, nbt))

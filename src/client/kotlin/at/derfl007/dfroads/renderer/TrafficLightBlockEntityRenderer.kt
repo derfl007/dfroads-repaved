@@ -2,7 +2,6 @@ package at.derfl007.dfroads.renderer
 
 import at.derfl007.dfroads.DFRoads
 import at.derfl007.dfroads.block.PedestrianTrafficLightBlock
-import at.derfl007.dfroads.blockentity.RoadSignBlockEntity
 import at.derfl007.dfroads.blockentity.TrafficLightBlockEntity
 import net.minecraft.block.HorizontalFacingBlock
 import net.minecraft.client.render.RenderLayer
@@ -54,13 +53,13 @@ class TrafficLightBlockEntityRenderer(val context: BlockEntityRendererFactory.Co
             if (currentPhase.isRedOn) {
                 matrices.push()
                 if (entity.cachedState.block is PedestrianTrafficLightBlock) {
-                    matrices.translate(6.0 / 16, 6.0 / 16, 5.699 / 16)
+                    matrices.translate(6.0 / 16, 6.0 / 16, 5.69 / 16)
                 } else {
-                    matrices.translate(6.0 / 16, 11.0 / 16, 5.699 / 16)
+                    matrices.translate(6.0 / 16, 11.0 / 16, 5.69 / 16)
                 }
                 val model: Matrix4f = matrices.peek().positionMatrix
                 val buffer =
-                    vertexConsumers.getBuffer(RenderLayer.getGuiTextured(DFRoads.id("textures/block/traffic_light_red_on.png")))
+                    vertexConsumers.getBuffer(RenderLayer.getEntityTranslucentEmissive(DFRoads.id("textures/block/traffic_light_red_on.png")))
 
                 renderTexture(model, buffer)
                 matrices.pop()
@@ -68,10 +67,10 @@ class TrafficLightBlockEntityRenderer(val context: BlockEntityRendererFactory.Co
 
             if (currentPhase.isYellowOn && entity.cachedState.block !is PedestrianTrafficLightBlock) {
                 matrices.push()
-                matrices.translate(6.0 / 16, 6.0 / 16, 5.699 / 16)
+                matrices.translate(6.0 / 16, 6.0 / 16, 5.69 / 16)
                 val model: Matrix4f = matrices.peek().positionMatrix
                 val buffer =
-                    vertexConsumers.getBuffer(RenderLayer.getGuiTextured(DFRoads.id("textures/block/traffic_light_yellow_on.png")))
+                    vertexConsumers.getBuffer(RenderLayer.getEntityTranslucentEmissive(DFRoads.id("textures/block/traffic_light_yellow_on.png")))
 
                 renderTexture(model, buffer)
                 matrices.pop()
@@ -79,10 +78,10 @@ class TrafficLightBlockEntityRenderer(val context: BlockEntityRendererFactory.Co
 
             if (currentPhase.isGreenOn) {
                 matrices.push()
-                matrices.translate(6.0 / 16, 1.0 / 16, 5.699 / 16)
+                matrices.translate(6.0 / 16, 1.0 / 16, 5.69 / 16)
                 val model: Matrix4f = matrices.peek().positionMatrix
                 val buffer =
-                    vertexConsumers.getBuffer(RenderLayer.getGuiTextured(DFRoads.id("textures/block/traffic_light_green_on.png")))
+                    vertexConsumers.getBuffer(RenderLayer.getEntityTranslucentEmissive(DFRoads.id("textures/block/traffic_light_green_on.png")))
 
                 renderTexture(model, buffer)
                 matrices.pop()

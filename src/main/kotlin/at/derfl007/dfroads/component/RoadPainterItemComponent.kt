@@ -4,15 +4,13 @@ import at.derfl007.dfroads.block.RoadBaseBlock
 import at.derfl007.dfroads.util.Color
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import net.minecraft.block.BlockState
-import net.minecraft.block.HorizontalFacingBlock.FACING
 import net.minecraft.util.math.Direction
 import java.util.function.Function
 
 
 data class RoadPainterItemComponent(
     var color: Color = Color.WHITE,
-    var texture: Int = 0,
+    var texture: RoadBaseBlock.RoadTexture = RoadBaseBlock.RoadTexture.ROAD_EMPTY,
     var textureFacing: Direction = Direction.NORTH,
     var range: Int = 0,
     var alternate: Boolean = false,
@@ -24,7 +22,7 @@ data class RoadPainterItemComponent(
         val CODEC: Codec<RoadPainterItemComponent> = RecordCodecBuilder.create(Function { builder ->
             builder.group(
                 Color.CODEC.fieldOf("color").forGetter(RoadPainterItemComponent::color),
-                Codec.INT.fieldOf("texture").forGetter(RoadPainterItemComponent::texture),
+                RoadBaseBlock.RoadTexture.CODEC.fieldOf("texture").forGetter(RoadPainterItemComponent::texture),
                 Direction.CODEC.fieldOf("textureFacing").forGetter(RoadPainterItemComponent::textureFacing),
                 Codec.INT.fieldOf("range").forGetter(RoadPainterItemComponent::range),
                 Codec.BOOL.fieldOf("alternate").forGetter(RoadPainterItemComponent::alternate),

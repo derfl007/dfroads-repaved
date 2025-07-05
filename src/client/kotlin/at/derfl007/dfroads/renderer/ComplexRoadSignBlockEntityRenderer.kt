@@ -35,7 +35,7 @@ class ComplexRoadSignBlockEntityRenderer(val context: BlockEntityRendererFactory
     ) {
         matrices.push()
 
-        val texture = DFRoads.id("textures/gui/sprites/${Constants.complexSignTextures[entity.backgroundTexture]}.png")
+        val texture = DFRoads.id("textures/gui/sprites/${entity.backgroundTexture}.png")
         val facing = entity.cachedState[HorizontalFacingBlock.FACING]
 
         matrices.translate(0.5, 0.5, 0.5) // move to center of block
@@ -53,7 +53,7 @@ class ComplexRoadSignBlockEntityRenderer(val context: BlockEntityRendererFactory
 
         val buffer = vertexConsumers.getBuffer(RenderLayer.getEntityCutout(texture))
 
-        val sprite = MinecraftClient.getInstance().guiAtlasManager.getSprite(DFRoads.id(Constants.complexSignTextures[entity.backgroundTexture]))
+        val sprite = MinecraftClient.getInstance().guiAtlasManager.getSprite(DFRoads.id(entity.backgroundTexture))
         val scaling = MinecraftClient.getInstance().guiAtlasManager.getScaling(sprite)
         if (scaling.type == Scaling.Type.NINE_SLICE && scaling is Scaling.NineSlice) {
             val borderTop = scaling.border.top / scaling.height.toFloat()

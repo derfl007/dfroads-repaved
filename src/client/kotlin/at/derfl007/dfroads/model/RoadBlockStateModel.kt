@@ -1,6 +1,5 @@
 package at.derfl007.dfroads.model
 
-import at.derfl007.dfroads.Constants.roadTextures
 import at.derfl007.dfroads.block.RoadBaseBlock
 import at.derfl007.dfroads.util.TransformHelper
 import com.mojang.serialization.MapCodec
@@ -26,7 +25,7 @@ import org.joml.Vector3f
 import java.util.function.Predicate
 
 class RoadBlockStateModel(
-    val sprites: Array<Sprite>,
+    val sprites: Map<RoadBaseBlock.RoadTexture, Sprite>,
     val roadSprite: Sprite,
     val topHeight: Float = 1f,
     val bottomHeight: Float = 0f,
@@ -43,7 +42,7 @@ class RoadBlockStateModel(
     ) {
         val facing = state[HorizontalFacingBlock.FACING]
         val textureFacing = state[RoadBaseBlock.TEXTURE_FACING]
-        val texture = sprites[state[RoadBaseBlock.TEXTURE]]
+        val texture = sprites[state[RoadBaseBlock.TEXTURE]] ?: sprites[RoadBaseBlock.RoadTexture.ROAD_EMPTY]!!
         val color = state[RoadBaseBlock.COLOR].argb()
 
         val finder = Renderer.get().materialFinder()
@@ -181,23 +180,30 @@ class RoadBlockStateModel(
         val facing: Direction,
         val textureFacing: Direction,
         val color: Int,
-        val texture: Int,
+        val texture: RoadBaseBlock.RoadTexture,
         val bottomHeight: Float,
         val topHeight: Float,
         val slopeHeight: Float
     )
 
-    class Unbaked(val topHeight: Float, val bottomHeight: Float, val slopeHeight: Float, val baseTexture: Identifier = Identifier.of(
-        "dfroads", "block/road")) : CustomUnbakedBlockStateModel,
+    class Unbaked(
+        val topHeight: Float,
+        val bottomHeight: Float,
+        val slopeHeight: Float,
+        val baseTexture: Identifier = Identifier.of(
+            "dfroads", "block/road"
+        )
+    ) : CustomUnbakedBlockStateModel,
         SimpleModel {
 
         companion object {
-            val SPRITE_IDS = Array(roadTextures.size) {
+            val SPRITE_ID_MAP = RoadBaseBlock.RoadTexture.entries.associateWith {
                 SpriteIdentifier(
                     SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
-                    Identifier.of("dfroads", "block/${roadTextures[it]}")
+                    Identifier.of("dfroads", "block/${it}")
                 )
             }
+
             fun roadSpriteId(baseTexture: Identifier) =
                 SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, baseTexture)
         }
@@ -207,12 +213,10 @@ class RoadBlockStateModel(
         }
 
         override fun bake(baker: Baker): BlockStateModel {
-            val sprites = Array(SPRITE_IDS.size) {
-                baker.spriteGetter[SPRITE_IDS[it], this]
-            }
+            val spriteMap = SPRITE_ID_MAP.mapValues { (_, value) -> baker.spriteGetter[value, this@Unbaked] }
             val roadSprite = baker.spriteGetter[roadSpriteId(baseTexture), this]
 
-            return RoadBlockStateModel(sprites, roadSprite, topHeight, bottomHeight, slopeHeight)
+            return RoadBlockStateModel(spriteMap, roadSprite, topHeight, bottomHeight, slopeHeight)
         }
 
         override fun resolve(resolver: ResolvableModel.Resolver?) {

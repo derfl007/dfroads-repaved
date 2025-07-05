@@ -21,6 +21,10 @@ open class WDraggableWidget(
 ) : WWidget() {
 
     var isSelected = false
+        set(value) {
+            field = value
+            if (value) selectHandlers.forEach { it() }
+        }
     var isDragging = false
     var isRotating = false
     var isResizingX = false
@@ -70,7 +74,6 @@ open class WDraggableWidget(
     override fun onMouseUp(x: Int, y: Int, button: Int): InputResult? {
         if (!isResizing && !isDragging && !isRotating) {
             isSelected = canSelect
-            if (canSelect) selectHandlers.forEach { it() }
         } else {
             if (isDragging) {
                 moveHandlers.forEach { it(this.x + PADDING, this.y + PADDING) }

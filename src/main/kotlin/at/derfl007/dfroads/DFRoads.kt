@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory
 
 @Suppress("UNUSED")
 object DFRoads : ModInitializer {
+    const val SCHEMA_VERSION: Int = 2
     const val MOD_ID = "dfroads"
     val LOGGER: Logger = LoggerFactory.getLogger(MOD_ID);
 

@@ -35,6 +35,15 @@ class RoadPainterItem(settings: Settings) : Item(settings) {
         }
         val component: RoadPainterItemComponent = context.player?.getStackInHand(context.hand)?.getTyped(ComponentRegistry.ROAD_PAINTER_ITEM_COMPONENT)?.value ?: RoadPainterItemComponent()
 
+        if (context.player!!.isSneaking) {
+            val state = context.world.getBlockState(context.blockPos)
+            component.texture = state[RoadBaseBlock.Companion.TEXTURE]
+            val turns = context.player!!.horizontalFacing.horizontalQuarterTurns + state[RoadBaseBlock.Companion.TEXTURE_FACING].horizontalQuarterTurns
+            component.textureFacing = Direction.fromHorizontalQuarterTurns(turns)
+            component.color = state[RoadBaseBlock.Companion.COLOR]
+            return ActionResult.SUCCESS
+        }
+
         findNextRoadBlock(context.world, context.blockPos, context.horizontalPlayerFacing, component.range, component, returnValue).let {
             returnValue = it
         }

@@ -1,7 +1,7 @@
 package at.derfl007.dfroads.gui
 
-import at.derfl007.dfroads.Constants
 import at.derfl007.dfroads.DFRoads
+import at.derfl007.dfroads.block.RoadBaseBlock
 import at.derfl007.dfroads.component.RoadPainterItemComponent
 import at.derfl007.dfroads.gui.widget.*
 import at.derfl007.dfroads.networking.RoadPainterPayload
@@ -57,13 +57,13 @@ class RoadPainterGuiDescription(val itemStack: ItemStack, val hand: String) : Li
 
         // Road texture
         roadTexture =
-            WSprite(DFRoads.id("textures/block/${Constants.roadTextures[component.texture]}.png"))
+            WSprite(DFRoads.id("textures/block/${component.texture}.png"))
         roadTexture.setOpaqueTint(component.color.rgb)
-        roadTexture.setImage(DFRoads.id("textures/block/${Constants.roadTextures[component.texture]}.png"))
+        roadTexture.setImage(DFRoads.id("textures/block/${component.texture}.png"))
         roadTexture.setUv(0f, 0f, 1f, 1f)
         roadTextureContainer.add(roadTexture, 0, 0, 6 * 18, 6 * 18)
 
-        roadTextureName = WLabel(Text.translatable("gui.dfroads.road_painter.textures.${Constants.roadTextures[component.texture]}"))
+        roadTextureName = WLabel(Text.translatable("gui.dfroads.road_painter.textures.${component.texture}"))
         roadTextureName.verticalAlignment = VerticalAlignment.CENTER
         roadTextureName.horizontalAlignment = HorizontalAlignment.RIGHT
         root.add(roadTextureName, 1, 7, 15, 1)
@@ -100,12 +100,12 @@ class RoadPainterGuiDescription(val itemStack: ItemStack, val hand: String) : Li
         }
         root.add(changeTextureButton, 0, 3, 8, 1)
 
-        texturePicker = WTexturePicker(Constants.roadTextures, component.texture)
+        texturePicker = WTexturePicker(RoadBaseBlock.RoadTexture.entries.map { it.toString() }, component.texture.ordinal)
         texturePicker.addOnClickHandlers {
-            component.texture = it
-            roadTexture.setImage(DFRoads.id("textures/block/${Constants.roadTextures[component.texture]}.png"))
+            component.texture = RoadBaseBlock.RoadTexture.entries[it]
+            roadTexture.setImage(DFRoads.id("textures/block/${component.texture}.png"))
             roadTextureName.text =
-                Text.translatable("gui.dfroads.road_painter.textures.${Constants.roadTextures[component.texture]}")
+                Text.translatable("gui.dfroads.road_painter.textures.${component.texture}")
         }
         root.add(texturePicker, 0, 4)
 

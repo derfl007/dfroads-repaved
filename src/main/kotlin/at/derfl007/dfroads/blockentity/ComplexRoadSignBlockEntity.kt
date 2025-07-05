@@ -1,5 +1,6 @@
 package at.derfl007.dfroads.blockentity
 
+import at.derfl007.dfroads.Constants
 import at.derfl007.dfroads.registry.BlockEntityRegistry
 import at.derfl007.dfroads.util.Color
 import com.mojang.serialization.Codec
@@ -14,6 +15,7 @@ import net.minecraft.registry.RegistryWrapper
 import net.minecraft.util.StringIdentifiable
 import net.minecraft.util.math.BlockPos
 import kotlin.jvm.optionals.getOrDefault
+import kotlin.jvm.optionals.getOrElse
 
 class ComplexRoadSignBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
     BlockEntityRegistry.COMPLEX_ROAD_SIGN_BLOCK_ENTITY,
@@ -21,7 +23,7 @@ class ComplexRoadSignBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity
     state
 ) {
 
-    var backgroundTexture: Int = 0
+    var backgroundTexture: String = "road_sign_complex_white"
         set(value) {
             field = value
             markDirty()
@@ -46,14 +48,16 @@ class ComplexRoadSignBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity
 
     override fun writeNbt(nbt: NbtCompound, registries: RegistryWrapper.WrapperLookup) {
         super.writeNbt(nbt, registries)
-        nbt.putInt("backgroundTexture", backgroundTexture)
+        nbt.putString("backgroundTexture", backgroundTexture)
         nbt.putFloat("height", height)
         nbt.putFloat("width", width)
         nbt.copyFromCodec(SignElement.CODEC.listOf().fieldOf("elements"), elements)
     }
 
     override fun readNbt(nbt: NbtCompound, registries: RegistryWrapper.WrapperLookup) {
-        backgroundTexture = nbt.getInt("backgroundTexture").getOrDefault(0)
+        backgroundTexture = nbt.getString("backgroundTexture").getOrElse {
+            Constants.complexSignTextures[nbt.getInt("backgroundTexture").getOrDefault(0)]
+        }
         height = nbt.getFloat("height").getOrDefault(0f)
         width = nbt.getFloat("width").getOrDefault(0f)
         elements = nbt.decode(SignElement.CODEC.listOf().fieldOf("elements")).getOrDefault(emptyList())

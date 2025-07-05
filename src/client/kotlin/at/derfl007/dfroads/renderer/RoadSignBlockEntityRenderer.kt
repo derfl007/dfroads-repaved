@@ -1,6 +1,5 @@
 package at.derfl007.dfroads.renderer
 
-import at.derfl007.dfroads.Constants
 import at.derfl007.dfroads.DFRoads
 import at.derfl007.dfroads.block.LedSignBlock
 import at.derfl007.dfroads.block.RedstoneTransmitterBlock
@@ -29,7 +28,7 @@ class RoadSignBlockEntityRenderer(val context: BlockEntityRendererFactory.Contex
     ) {
         matrices.push()
 
-        val texture = DFRoads.id("textures/block/${Constants.signTextures[entity.texture]}.png")
+        val texture = DFRoads.id("textures/block/${entity.texture}.png")
         val isLedSign = entity.cachedState.block is LedSignBlock
         val size =
             if (isLedSign) 0.75f
@@ -76,7 +75,7 @@ class RoadSignBlockEntityRenderer(val context: BlockEntityRendererFactory.Contex
             matrices.translate(0.0, 0.0, 0.2 / 16.0)
         }
 
-        val buffer = vertexConsumers.getBuffer(if (isLedSign && entity.cachedState[RedstoneTransmitterBlock.Companion.POWER] == 0) RenderLayer.getGuiTextured(texture) else RenderLayer.getEntityCutout(texture))
+        val buffer = vertexConsumers.getBuffer(if (isLedSign && entity.cachedState[RedstoneTransmitterBlock.Companion.POWER] == 0) RenderLayer.getEntityTranslucentEmissive(texture) else RenderLayer.getEntityCutout(texture))
 
         var model: Matrix4f? = matrices.peek().positionMatrix
 

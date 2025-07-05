@@ -41,23 +41,23 @@ class SimpleRoadSignGuiDescription(
             10, 0, 7, 1
         );
 
-        signTexture = WSprite(DFRoads.id("textures/block/${Constants.signTextures[entity.texture]}.png"))
+        signTexture = WSprite(DFRoads.id("textures/block/${entity.texture}.png"))
         root.add(signTexture, 10, 1, 6, 6)
 
         signTextureName =
-            WLabel(Text.translatable("gui.dfroads.simple_sign_editor.textures.${Constants.signTextures[entity.texture]}"))
+            WLabel(Text.translatable("gui.dfroads.simple_sign_editor.textures.${entity.texture}"))
         signTextureName.verticalAlignment = VerticalAlignment.CENTER
         signTextureName.horizontalAlignment = HorizontalAlignment.CENTER
         root.add(signTextureName, 10, 7, 6, 1)
 
         texturePicker = WTexturePicker(Constants.signTextures)
         texturePicker.columns = 9
-        texturePicker.activeButtonIndex = entity.texture
+        texturePicker.activeButtonIndex = Constants.signTextures.indexOf(entity.texture)
         texturePicker.addOnClickHandlers {
-            entity.texture = it
-            signTexture.setImage(DFRoads.id("textures/block/${Constants.signTextures[entity.texture]}.png"))
+            entity.texture = Constants.signTextures[it]
+            signTexture.setImage(DFRoads.id("textures/block/${entity.texture}.png"))
             signTextureName.text =
-                Text.translatable("gui.dfroads.simple_sign_editor.textures.${Constants.signTextures[entity.texture]}")
+                Text.translatable("gui.dfroads.simple_sign_editor.textures.${entity.texture}")
         }
 
         val texturePickerContainer = WScrollPanel(texturePicker)

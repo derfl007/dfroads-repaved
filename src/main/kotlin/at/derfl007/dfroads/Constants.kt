@@ -8,40 +8,6 @@ object Constants {
         "icon_car",
         "icon_center"
     )
-    
-    val roadTextures = listOf(
-        "road_empty",
-        "road_arrow_s",
-        "road_arrow_l",
-        "road_arrow_r",
-        "road_arrow_sl",
-        "road_arrow_sr",
-        "road_arrow_rl",
-        "road_arrow_srl",
-        "road_crosswalk",
-        "road_crosswalk_diagonal_center",
-        "road_crosswalk_diagonal_end",
-        "road_crosswalk_diagonal_side",
-        "road_line_single",
-        "road_line_single_corner",
-        "road_line_single_t_shape",
-        "road_line_single_cross",
-        "road_line_merge",
-        "road_line_double",
-        "road_line_double_inner",
-        "road_line_double_diagonal",
-        "road_line_half_double",
-        "road_line_half_double_inner",
-        "road_line_half_double_outer",
-        "road_line_half_double_inner_diagonal",
-        "road_line_half_double_outer_diagonal",
-        "road_line_split_right",
-        "road_line_split_left",
-        "road_line_diagonal",
-        "road_white",
-        "road_white_half",
-        "road_white_quarter",
-    )
 
     val signTextures = listOf(
         "sign_speed_10",
