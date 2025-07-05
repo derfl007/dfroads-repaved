@@ -54,7 +54,11 @@ jobs:
         if: ${{ steps.release.outputs.release_created }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload ${{ steps.release.outputs.tag_name }} ./build/libs/!(*-@(dev|sources|javadoc)).jar
+        run: |
+          shopt -s extglob
+          for i in `ls -pd ./build/libs/!(*-@(sources|javadoc|dev)).jar` ; do
+            gh release upload ${{ steps.release.outputs.tag_name }} $i
+          done
       - name: Publish to modrinth and curseforge
         uses: Kir-Antipov/mc-publish@v3.3
         if: ${{ steps.release.outputs.release_created }}
