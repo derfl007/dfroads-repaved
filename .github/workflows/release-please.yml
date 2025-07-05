@@ -15,7 +15,7 @@ name: release-please
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - name: checkout repository
         uses: actions/checkout@v4
@@ -26,15 +26,18 @@ jobs:
         with:
           java-version: '21'
           distribution: 'microsoft'
+          cache: 'gradle'
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
       - name: build
-        run: ./gradlew build
+        run: ./gradlew build --no-daemon
       - name: capture build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: jar
-          path: build/libs/
+          path: |
+            build/libs/*.jar
+            !build/libs/*-sources.jar
   release-please:
     runs-on: ubuntu-latest
     needs: build
