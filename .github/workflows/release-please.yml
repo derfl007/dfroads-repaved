@@ -48,11 +48,16 @@ jobs:
           # doesn't use a custom token since we don't want the build workflow to run on release-please PRs
           release-type: simple
           manifest-file: '.release-please-manifest.json'
+
+      # Anything after here will only run after a release was created
       - name: Download artifacts from build
-        if: ${{ steps.release.outputs.release_created }} # no point downloading if no release was created
+        if: ${{ steps.release.outputs.release_created }}
         uses: actions/download-artifact@v4
         with:
           name: jar
+      - name: checkout repository
+        if: ${{ steps.release.outputs.release_created }}
+        uses: actions/checkout@v4
       - name: Upload Release Artifact
         if: ${{ steps.release.outputs.release_created }}
         env:
