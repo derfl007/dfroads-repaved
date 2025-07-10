@@ -48,6 +48,7 @@ jobs:
           # doesn't use a custom token since we don't want the build workflow to run on release-please PRs
           release-type: simple
           manifest-file: '.release-please-manifest.json'
+          config-file: 'release-please-config.json'
 
       # Anything after here will only run after a release was created
       - name: checkout repository
@@ -74,4 +75,5 @@ jobs:
         with:
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+          changelog-file: 'CHANGELOG.md'
           files: "build/libs/!(*-@(dev|sources|javadoc)).jar"
