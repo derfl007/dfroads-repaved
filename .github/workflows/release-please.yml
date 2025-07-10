@@ -46,7 +46,6 @@ jobs:
         id: release
         with:
           # doesn't use a custom token since we don't want the build workflow to run on release-please PRs
-          release-type: simple
           manifest-file: '.release-please-manifest.json'
           config-file: 'release-please-config.json'
 
