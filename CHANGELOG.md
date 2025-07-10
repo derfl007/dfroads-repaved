@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/derfl007/dfroads-repaved/compare/v1.0.2...v1.1.0) (2025-07-10)
+
+
+### Features
+
+* New road line logic ([f391674](https://github.com/derfl007/dfroads-repaved/commit/f391674076d687402f971f7959a3e9db4651548a))
+
 ## 1.0.2 (2025-07-05)
 
 
