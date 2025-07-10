@@ -3,7 +3,10 @@
     ".": {
       "release-type": "simple",
       "extra-files": [
-        "gradle.properties"
+        {
+          "path": "gradle.properties",
+          "type": "generic"
+        }
       ]
     }
   }
