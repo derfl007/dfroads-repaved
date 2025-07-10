@@ -33,7 +33,8 @@ class RoadPainterGuiDescription(val itemStack: ItemStack, val hand: String) : Li
     private var changeTextureButton: WToggleButton
     private var changeTextureFacingButton: WToggleButton
     private var rangeSlider: WLabeledSlider
-    private var alternateButton: WToggleButton
+    private var intervalSlider: WLabeledSlider
+    private var bigButton: WToggleButton
     
     var component = RoadPainterItemComponent.copy(itemStack.getTyped(ComponentRegistry.ROAD_PAINTER_ITEM_COMPONENT)?.value()!!)
 
@@ -125,6 +126,18 @@ class RoadPainterGuiDescription(val itemStack: ItemStack, val hand: String) : Li
         }
         root.add(textureFacingPicker, 2, 9)
 
+        // Alternate
+        intervalSlider = WLabeledSlider(1, 6, Axis.HORIZONTAL)
+        intervalSlider.value = component.interval
+        intervalSlider.label = Text.translatable("gui.dfroads.road_painter.interval_label", component.interval)
+        intervalSlider.labelUpdater = WLabeledSlider.LabelUpdater { value ->
+            Text.translatable("gui.dfroads.road_painter.interval_label", value)
+        }
+        intervalSlider.draggingFinishedListener = IntConsumer {
+            component.interval = it
+        }
+        root.add(intervalSlider, 10, 8, 6, 1)
+
         // Range
         rangeSlider = WLabeledSlider(0, 64, Axis.HORIZONTAL)
         rangeSlider.value = component.range
@@ -137,17 +150,15 @@ class RoadPainterGuiDescription(val itemStack: ItemStack, val hand: String) : Li
         }
         root.add(rangeSlider, 10, 9, 6, 1)
 
-        // Alternate
-        alternateButton = WToggleButton(Text.translatable("gui.dfroads.road_painter.alternate_button_label"))
-        alternateButton.toggle = component.alternate
-        alternateButton.setOnToggle { isOn ->
-            component.alternate = isOn
+        bigButton = WToggleButton(Text.translatable("gui.dfroads.road_painter.big_button_label"))
+        bigButton.toggle = component.big
+        bigButton.setOnToggle {
+            component.big = it
         }
-        root.add(alternateButton, 10, 8, 6, 1)
-
+        root.add(bigButton, 10, 10, 6, 1)
 
         val applyButton = WIconButton("apply").setOnClick(::save)
-        root.add(applyButton, 16, 10, 1, 1)
+        root.add(applyButton, 16, 11, 1, 1)
 
         root.validate(this)
     }

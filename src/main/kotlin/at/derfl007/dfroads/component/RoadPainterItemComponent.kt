@@ -13,7 +13,8 @@ data class RoadPainterItemComponent(
     var texture: RoadBaseBlock.RoadTexture = RoadBaseBlock.RoadTexture.ROAD_EMPTY,
     var textureFacing: Direction = Direction.NORTH,
     var range: Int = 0,
-    var alternate: Boolean = false,
+    var interval: Int = 0,
+    var big: Boolean = false,
     var changeColor: Boolean = true,
     var changeTexture: Boolean = true,
     var changeTextureFacing: Boolean = true) {
@@ -25,7 +26,8 @@ data class RoadPainterItemComponent(
                 RoadBaseBlock.RoadTexture.CODEC.fieldOf("texture").forGetter(RoadPainterItemComponent::texture),
                 Direction.CODEC.fieldOf("textureFacing").forGetter(RoadPainterItemComponent::textureFacing),
                 Codec.INT.fieldOf("range").forGetter(RoadPainterItemComponent::range),
-                Codec.BOOL.fieldOf("alternate").forGetter(RoadPainterItemComponent::alternate),
+                Codec.INT.fieldOf("interval").forGetter(RoadPainterItemComponent::interval),
+                Codec.BOOL.fieldOf("big").forGetter(RoadPainterItemComponent::big),
                 Codec.BOOL.fieldOf("changeColor").forGetter(RoadPainterItemComponent::changeColor),
                 Codec.BOOL.fieldOf("changeTexture").forGetter(RoadPainterItemComponent::changeTexture),
                 Codec.BOOL.fieldOf("changeTextureFacing").forGetter(RoadPainterItemComponent::changeTextureFacing)
@@ -34,7 +36,7 @@ data class RoadPainterItemComponent(
 
         fun copy(other: RoadPainterItemComponent): RoadPainterItemComponent {
             with(other) {
-                return RoadPainterItemComponent(color, texture, textureFacing, range, alternate, changeColor, changeTexture, changeTextureFacing)
+                return RoadPainterItemComponent(color, texture, textureFacing, range, interval, big, changeColor, changeTexture, changeTextureFacing)
             }
         }
     }

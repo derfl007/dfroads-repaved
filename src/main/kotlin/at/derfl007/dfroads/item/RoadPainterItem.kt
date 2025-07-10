@@ -4,6 +4,8 @@ import at.derfl007.dfroads.block.RoadBaseBlock
 import at.derfl007.dfroads.component.RoadPainterItemComponent
 import at.derfl007.dfroads.networking.RoadPainterPayload
 import at.derfl007.dfroads.registry.ComponentRegistry
+import at.derfl007.dfroads.util.fromHorizontalDegrees
+import at.derfl007.dfroads.util.offsetMultiple
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.block.BlockState
 import net.minecraft.entity.player.PlayerEntity
@@ -22,7 +24,14 @@ class RoadPainterItem(settings: Settings) : Item(settings) {
     override fun use(world: World, user: PlayerEntity, hand: Hand): ActionResult {
         if (world.isClient) return ActionResult.SUCCESS_SERVER
         val itemStack = user.getStackInHand(hand)
-        ServerPlayNetworking.send(user as ServerPlayerEntity, RoadPainterPayload(itemStack, hand.toString(),itemStack.getTyped(ComponentRegistry.ROAD_PAINTER_ITEM_COMPONENT)?.value ?: RoadPainterItemComponent()))
+        ServerPlayNetworking.send(
+            user as ServerPlayerEntity,
+            RoadPainterPayload(
+                itemStack,
+                hand.toString(),
+                itemStack.getTyped(ComponentRegistry.ROAD_PAINTER_ITEM_COMPONENT)?.value ?: RoadPainterItemComponent()
+            )
+        )
         return ActionResult.SUCCESS
     }
 
@@ -33,18 +42,29 @@ class RoadPainterItem(settings: Settings) : Item(settings) {
         if (itemStack?.item !is RoadPainterItem) {
             return returnValue
         }
-        val component: RoadPainterItemComponent = context.player?.getStackInHand(context.hand)?.getTyped(ComponentRegistry.ROAD_PAINTER_ITEM_COMPONENT)?.value ?: RoadPainterItemComponent()
+        val component: RoadPainterItemComponent =
+            context.player?.getStackInHand(context.hand)?.getTyped(ComponentRegistry.ROAD_PAINTER_ITEM_COMPONENT)?.value
+                ?: RoadPainterItemComponent()
 
         if (context.player!!.isSneaking) {
             val state = context.world.getBlockState(context.blockPos)
+            if (state.block !is RoadBaseBlock) return ActionResult.PASS
             component.texture = state[RoadBaseBlock.Companion.TEXTURE]
-            val turns = context.player!!.horizontalFacing.horizontalQuarterTurns + state[RoadBaseBlock.Companion.TEXTURE_FACING].horizontalQuarterTurns
+            val turns =
+                context.player!!.horizontalFacing.horizontalQuarterTurns + state[RoadBaseBlock.Companion.TEXTURE_FACING].horizontalQuarterTurns
             component.textureFacing = Direction.fromHorizontalQuarterTurns(turns)
             component.color = state[RoadBaseBlock.Companion.COLOR]
             return ActionResult.SUCCESS
         }
 
-        findNextRoadBlock(context.world, context.blockPos, context.horizontalPlayerFacing, component.range, component, returnValue).let {
+        findNextRoadBlock(
+            context.world,
+            context.blockPos,
+            context.playerYaw.toDouble(),
+            component.range,
+            component,
+            returnValue
+        ).let {
             returnValue = it
         }
         return returnValue
@@ -57,7 +77,7 @@ class RoadPainterItem(settings: Settings) : Item(settings) {
     private fun findNextRoadBlock(
         world: World,
         currentPos: BlockPos,
-        direction: Direction,
+        yaw: Double,
         remainingRange: Int,
         component: RoadPainterItemComponent,
         returnValue: ActionResult
@@ -71,49 +91,87 @@ class RoadPainterItem(settings: Settings) : Item(settings) {
         }
 
         val state = world.getBlockState(currentPos)
-        val posUp = currentPos.offset(Direction.UP)
+        val posUp = currentPos.up()
         val stateUp = world.getBlockState(posUp)
+        val posDown = currentPos.down()
+        val stateDown = world.getBlockState(posDown)
         return when {
             stateUp.block is RoadBaseBlock -> {
-                if (!component.alternate || remainingRange % 2 == 0) {
+                if (component.interval != 0 && remainingRange % component.interval == 0) {
                     world.setBlockState(
                         posUp,
-                        setBlockProperties(stateUp, direction, component)
+                        setBlockProperties(stateUp, Direction.fromHorizontalDegrees(yaw), component)
                     )
                 }
-                findNextRoadBlock(world, posUp.offset(direction), direction, remainingRange - 1, component, ActionResult.SUCCESS)
+                findNextRoadBlock(
+                    world,
+                    posUp.offsetMultiple(fromHorizontalDegrees(yaw)),
+                    yaw,
+                    remainingRange - 1,
+                    component,
+                    ActionResult.SUCCESS
+                )
             }
+
+            stateDown.block is RoadBaseBlock -> {
+                if (component.interval != 0 && remainingRange % component.interval == 0) {
+                    world.setBlockState(
+                        posDown,
+                        setBlockProperties(stateDown, Direction.fromHorizontalDegrees(yaw), component)
+                    )
+                }
+                findNextRoadBlock(
+                    world,
+                    posDown.offsetMultiple(fromHorizontalDegrees(yaw)),
+                    yaw,
+                    remainingRange - 1,
+                    component,
+                    ActionResult.SUCCESS
+                )
+            }
+
             state.block is RoadBaseBlock -> {
-                if (!component.alternate || remainingRange % 2 == 0) {
+                if (component.interval != 0 && remainingRange % component.interval == 0) {
                     world.setBlockState(
                         currentPos,
-                        setBlockProperties(state, direction, component)
+                        setBlockProperties(state, Direction.fromHorizontalDegrees(yaw), component)
                     )
                 }
-                findNextRoadBlock(world, currentPos.offset(direction), direction, remainingRange - 1,
-                    component,ActionResult.SUCCESS)
+                findNextRoadBlock(
+                    world, currentPos.offsetMultiple(fromHorizontalDegrees(yaw)), yaw, remainingRange - 1,
+                    component, ActionResult.SUCCESS
+                )
             }
+
             returnValue == ActionResult.SUCCESS -> {
                 ActionResult.SUCCESS
             }
+
             else -> {
                 ActionResult.PASS
             }
         }
     }
 
-    private fun setBlockProperties(state: BlockState, playerFacing: Direction, component: RoadPainterItemComponent): BlockState? {
+    private fun setBlockProperties(
+        state: BlockState,
+        playerFacing: Direction,
+        component: RoadPainterItemComponent
+    ): BlockState? {
+        if (state.block !is RoadBaseBlock) return state
         val newColor = if (component.changeColor) component.color else state[RoadBaseBlock.COLOR]
         val newTexture = if (component.changeTexture) component.texture else state[RoadBaseBlock.TEXTURE]
+        val big = component.big && newTexture.canBeBig
         val newTextureFacing =
             if (component.changeTextureFacing) {
-                val turns = playerFacing.horizontalQuarterTurns + component.textureFacing.opposite.horizontalQuarterTurns
+                val turns =
+                    playerFacing.horizontalQuarterTurns + component.textureFacing.opposite.horizontalQuarterTurns
 
                 Direction.fromHorizontalQuarterTurns(turns)
             } else {
                 state[RoadBaseBlock.TEXTURE_FACING]
             }
         return state.with(RoadBaseBlock.COLOR, newColor).with(RoadBaseBlock.TEXTURE, newTexture)
-            .with(RoadBaseBlock.TEXTURE_FACING, newTextureFacing)
+            .with(RoadBaseBlock.TEXTURE_FACING, newTextureFacing).with(RoadBaseBlock.BIG, big)
     }
 }
