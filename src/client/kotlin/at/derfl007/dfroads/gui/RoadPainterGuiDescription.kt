@@ -127,7 +127,7 @@ class RoadPainterGuiDescription(val itemStack: ItemStack, val hand: String) : Li
         root.add(textureFacingPicker, 2, 9)
 
         // Alternate
-        intervalSlider = WLabeledSlider(1, 6, Axis.HORIZONTAL)
+        intervalSlider = WLabeledSlider(0, 6, Axis.HORIZONTAL)
         intervalSlider.value = component.interval
         intervalSlider.label = Text.translatable("gui.dfroads.road_painter.interval_label", component.interval)
         intervalSlider.labelUpdater = WLabeledSlider.LabelUpdater { value ->

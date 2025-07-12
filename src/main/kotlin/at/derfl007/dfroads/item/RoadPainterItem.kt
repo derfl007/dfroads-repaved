@@ -5,7 +5,7 @@ import at.derfl007.dfroads.component.RoadPainterItemComponent
 import at.derfl007.dfroads.networking.RoadPainterPayload
 import at.derfl007.dfroads.registry.ComponentRegistry
 import at.derfl007.dfroads.util.fromHorizontalDegrees
-import at.derfl007.dfroads.util.offsetMultiple
+import at.derfl007.dfroads.util.offsetEightWay
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.block.BlockState
 import net.minecraft.entity.player.PlayerEntity
@@ -95,9 +95,12 @@ class RoadPainterItem(settings: Settings) : Item(settings) {
         val stateUp = world.getBlockState(posUp)
         val posDown = currentPos.down()
         val stateDown = world.getBlockState(posDown)
+
+        val shouldPaint = component.interval == 0 || ((component.range - remainingRange) % (component.interval * 2) < component.interval)
+
         return when {
             stateUp.block is RoadBaseBlock -> {
-                if (component.interval != 0 && remainingRange % component.interval == 0) {
+                if (shouldPaint) {
                     world.setBlockState(
                         posUp,
                         setBlockProperties(stateUp, Direction.fromHorizontalDegrees(yaw), component)
@@ -105,7 +108,7 @@ class RoadPainterItem(settings: Settings) : Item(settings) {
                 }
                 findNextRoadBlock(
                     world,
-                    posUp.offsetMultiple(fromHorizontalDegrees(yaw)),
+                    posUp.offsetEightWay(fromHorizontalDegrees(yaw)),
                     yaw,
                     remainingRange - 1,
                     component,
@@ -114,7 +117,7 @@ class RoadPainterItem(settings: Settings) : Item(settings) {
             }
 
             stateDown.block is RoadBaseBlock -> {
-                if (component.interval != 0 && remainingRange % component.interval == 0) {
+                if (shouldPaint) {
                     world.setBlockState(
                         posDown,
                         setBlockProperties(stateDown, Direction.fromHorizontalDegrees(yaw), component)
@@ -122,7 +125,7 @@ class RoadPainterItem(settings: Settings) : Item(settings) {
                 }
                 findNextRoadBlock(
                     world,
-                    posDown.offsetMultiple(fromHorizontalDegrees(yaw)),
+                    posDown.offsetEightWay(fromHorizontalDegrees(yaw)),
                     yaw,
                     remainingRange - 1,
                     component,
@@ -131,14 +134,14 @@ class RoadPainterItem(settings: Settings) : Item(settings) {
             }
 
             state.block is RoadBaseBlock -> {
-                if (component.interval != 0 && remainingRange % component.interval == 0) {
+                if (shouldPaint) {
                     world.setBlockState(
                         currentPos,
                         setBlockProperties(state, Direction.fromHorizontalDegrees(yaw), component)
                     )
                 }
                 findNextRoadBlock(
-                    world, currentPos.offsetMultiple(fromHorizontalDegrees(yaw)), yaw, remainingRange - 1,
+                    world, currentPos.offsetEightWay(fromHorizontalDegrees(yaw)), yaw, remainingRange - 1,
                     component, ActionResult.SUCCESS
                 )
             }

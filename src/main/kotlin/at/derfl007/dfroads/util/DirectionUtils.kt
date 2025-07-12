@@ -19,7 +19,7 @@ fun fromHorizontalEighthQuarterTurns(eighthRotation: Int) = EightWayDirection.en
 
 fun fromHorizontalDegrees(angle: Double) = fromHorizontalEighthQuarterTurns(floor(angle / 45.0 + 0.5).toInt() and 7)
 
-fun BlockPos.offsetMultiple(direction: EightWayDirection): BlockPos {
+fun BlockPos.offsetEightWay(direction: EightWayDirection): BlockPos {
     var pos = this
     direction.directions.forEach { pos = pos.offset(it) }
     return pos
