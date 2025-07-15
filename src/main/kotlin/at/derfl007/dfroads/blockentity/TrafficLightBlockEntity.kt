@@ -10,8 +10,9 @@ import net.minecraft.network.listener.ClientPlayPacketListener
 import net.minecraft.network.packet.Packet
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket
 import net.minecraft.registry.RegistryWrapper
+import net.minecraft.storage.ReadView
+import net.minecraft.storage.WriteView
 import net.minecraft.util.math.BlockPos
-import kotlin.jvm.optionals.getOrDefault
 import kotlin.jvm.optionals.getOrNull
 
 /**
@@ -53,21 +54,21 @@ class TrafficLightBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(TR
         currentPhaseIndex = (currentPhaseIndex + 1) % phases.size
     }
 
-    override fun writeNbt(nbt: NbtCompound, registries: RegistryWrapper.WrapperLookup?) {
-        nbt.putInt("state", state.ordinal)
-        nbt.putIntArray("phases", phases.map { it.mapToInt() }.toIntArray())
-        nbt.putInt("timeUntilNextPhase", pulsesToNextPhase)
-        nbt.putInt("currentPhase", currentPhaseIndex)
-        super.writeNbt(nbt, registries)
+    override fun writeData(view: WriteView) {
+        view.putInt("state", state.ordinal)
+        view.putIntArray("phases", phases.map { it.mapToInt() }.toIntArray())
+        view.putInt("timeUntilNextPhase", pulsesToNextPhase)
+        view.putInt("currentPhase", currentPhaseIndex)
+        super.writeData(view)
     }
 
-    override fun readNbt(nbt: NbtCompound, registries: RegistryWrapper.WrapperLookup?) {
-        super.readNbt(nbt, registries)
-        state = TrafficLightState.entries[nbt.getInt("state").getOrDefault(state.ordinal)]
-        phases =
-            nbt.getIntArray("phases").getOrNull()?.map { TrafficLightPhase.mapFromInt(it) }?.toList() ?: phases
-        pulsesToNextPhase = nbt.getInt("timeUntilNextPhase").getOrDefault(pulsesToNextPhase)
-        currentPhaseIndex = nbt.getInt("currentPhase").getOrDefault(currentPhaseIndex)
+    override fun readData(nbt: ReadView) {
+        super.readData(nbt)
+        state = TrafficLightState.entries[nbt.getInt("state", state.ordinal)]
+        phases = nbt.getOptionalIntArray("phases").getOrNull()?.map { TrafficLightPhase.mapFromInt(it) }?.toList()
+            ?: phases
+        pulsesToNextPhase = nbt.getInt("timeUntilNextPhase", pulsesToNextPhase)
+        currentPhaseIndex = nbt.getInt("currentPhase", currentPhaseIndex)
     }
 
     override fun toUpdatePacket(): Packet<ClientPlayPacketListener?>? {

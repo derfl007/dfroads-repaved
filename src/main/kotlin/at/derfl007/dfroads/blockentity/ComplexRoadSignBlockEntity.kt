@@ -1,6 +1,5 @@
 package at.derfl007.dfroads.blockentity
 
-import at.derfl007.dfroads.Constants
 import at.derfl007.dfroads.registry.BlockEntityRegistry
 import at.derfl007.dfroads.util.Color
 import com.mojang.serialization.Codec
@@ -12,10 +11,11 @@ import net.minecraft.network.listener.ClientPlayPacketListener
 import net.minecraft.network.packet.Packet
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket
 import net.minecraft.registry.RegistryWrapper
+import net.minecraft.storage.ReadView
+import net.minecraft.storage.WriteView
 import net.minecraft.util.StringIdentifiable
 import net.minecraft.util.math.BlockPos
 import kotlin.jvm.optionals.getOrDefault
-import kotlin.jvm.optionals.getOrElse
 
 class ComplexRoadSignBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
     BlockEntityRegistry.COMPLEX_ROAD_SIGN_BLOCK_ENTITY,
@@ -46,22 +46,20 @@ class ComplexRoadSignBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity
             markDirty()
         }
 
-    override fun writeNbt(nbt: NbtCompound, registries: RegistryWrapper.WrapperLookup) {
-        super.writeNbt(nbt, registries)
-        nbt.putString("backgroundTexture", backgroundTexture)
-        nbt.putFloat("height", height)
-        nbt.putFloat("width", width)
-        nbt.copyFromCodec(SignElement.CODEC.listOf().fieldOf("elements"), elements)
+    override fun writeData(view: WriteView) {
+        super.writeData(view)
+        view.putString("backgroundTexture", backgroundTexture)
+        view.putFloat("height", height)
+        view.putFloat("width", width)
+        view.put("elements",SignElement.CODEC.listOf(), elements)
     }
 
-    override fun readNbt(nbt: NbtCompound, registries: RegistryWrapper.WrapperLookup) {
-        backgroundTexture = nbt.getString("backgroundTexture").getOrElse {
-            Constants.complexSignTextures[nbt.getInt("backgroundTexture").getOrDefault(0)]
-        }
-        height = nbt.getFloat("height").getOrDefault(0f)
-        width = nbt.getFloat("width").getOrDefault(0f)
-        elements = nbt.decode(SignElement.CODEC.listOf().fieldOf("elements")).getOrDefault(emptyList())
-        super.readNbt(nbt, registries)
+    override fun readData(view: ReadView) {
+        backgroundTexture = view.getString("backgroundTexture", "road_sign_complex_white")
+        height = view.getFloat("height", 0f)
+        width = view.getFloat("width", 0f)
+        elements = view.read("elements", SignElement.CODEC.listOf()).getOrDefault(emptyList())
+        super.readData(view)
     }
 
     override fun toUpdatePacket(): Packet<ClientPlayPacketListener?>? {

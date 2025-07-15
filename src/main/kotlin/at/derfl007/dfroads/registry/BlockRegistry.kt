@@ -51,6 +51,9 @@ object BlockRegistry {
         val roadBlockSettingsSolid = Settings.copy(Blocks.STONE).velocityMultiplier(1.2f).mapColor(MapColor.BLACK)
         val roadBlockSettingsTransparent =
             Settings.copy(Blocks.STONE).velocityMultiplier(1.2f).solidBlock { _, _, _ -> false }.nonOpaque()
+        val concreteRoadBlockSettingsSolid = Settings.copy(Blocks.GRAY_CONCRETE).velocityMultiplier(1.2f)
+        val concreteRoadBlockSettingsTransparent =
+            Settings.copy(Blocks.GRAY_CONCRETE).velocityMultiplier(1.2f).solidBlock { _, _, _ -> false }.nonOpaque()
 
         ROAD_BLOCK = register(
             "road_full_block", { settings -> RoadFullBlock(settings) }, true, roadBlockSettingsSolid
@@ -71,22 +74,25 @@ object BlockRegistry {
             roadBlockSettingsTransparent
         )
         CONCRETE_ROAD_BLOCK = register(
-            "concrete_road_full_block", { settings -> RoadFullBlock(settings) }, true, roadBlockSettingsSolid
+            "concrete_road_full_block", { settings -> RoadFullBlock(settings) }, true, concreteRoadBlockSettingsSolid
         )
         CONCRETE_ROAD_SLAB_BLOCK = register(
-            "concrete_road_slab_block", { settings -> RoadSlabBlock(settings) }, true, roadBlockSettingsTransparent
+            "concrete_road_slab_block", { settings -> RoadSlabBlock(settings) }, true,
+            concreteRoadBlockSettingsTransparent
         )
         CONCRETE_ROAD_FULL_SLOPE_BLOCK = register(
-            "concrete_road_full_slope_block", { settings -> RoadFullSlopeBlock(settings) }, true, roadBlockSettingsTransparent
+            "concrete_road_full_slope_block", { settings -> RoadFullSlopeBlock(settings) }, true,
+            concreteRoadBlockSettingsTransparent
         )
         CONCRETE_ROAD_TOP_SLOPE_BLOCK = register(
-            "concrete_road_top_slope_block", { settings -> RoadTopSlopeBlock(settings) }, true, roadBlockSettingsTransparent
+            "concrete_road_top_slope_block", { settings -> RoadTopSlopeBlock(settings) }, true,
+            concreteRoadBlockSettingsTransparent
         )
         CONCRETE_ROAD_BOTTOM_SLOPE_BLOCK = register(
             "concrete_road_bottom_slope_block",
             { settings -> RoadBottomSlopeBlock(settings) },
             true,
-            roadBlockSettingsTransparent
+            concreteRoadBlockSettingsTransparent
         )
         ROAD_SIGN_BLOCK = register(
             "road_sign_block", ::RoadSignBlock, true, Settings.copy(Blocks.IRON_BARS)

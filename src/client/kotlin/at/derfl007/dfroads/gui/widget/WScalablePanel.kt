@@ -15,16 +15,11 @@ class WScalableWidget(var scale: Float = 1f) : WPlainPanel() {
         for (child in children) {
 
             val matrices = context!!.matrices
-            matrices.push()
-            matrices.translate(x.toFloat(), y.toFloat(), 0f)
-//            matrices.translate(
-//                (width / 2).toDouble(),
-//                (height / 2).toDouble(),
-//                0.0
-//            )
-            matrices.scale(scale, scale, 0f)
+            matrices.pushMatrix()
+            matrices.translate(x.toFloat(), y.toFloat())
+            matrices.scale(scale, scale)
             child.paint(context, 0, 0, mouseX, mouseY)
-            matrices.pop()
+            matrices.popMatrix()
         }
     }
 

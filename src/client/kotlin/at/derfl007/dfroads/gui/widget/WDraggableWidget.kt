@@ -6,7 +6,6 @@ import io.github.cottonmc.cotton.gui.widget.WWidget
 import io.github.cottonmc.cotton.gui.widget.data.InputResult
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.texture.Scaling
-import net.minecraft.util.math.RotationAxis
 import kotlin.math.*
 
 open class WDraggableWidget(
@@ -167,21 +166,21 @@ open class WDraggableWidget(
     override fun paint(context: DrawContext, x: Int, y: Int, mouseX: Int, mouseY: Int) {
         widget.setSize(this.width - 8, this.height - 8)
         val matrices = context.matrices
-        matrices.push()
-        matrices.translate(PADDING.toFloat(), PADDING.toFloat(), 0f)
-        matrices.translate(x.toFloat(), y.toFloat(), 0f)
-        matrices.translate(((widget.width / 2f)), ((widget.height / 2f)), 0f)
-        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(rotation.toFloat()))
+        matrices.pushMatrix()
+        matrices.translate(PADDING.toFloat(), PADDING.toFloat())
+        matrices.translate(x.toFloat(), y.toFloat())
+        matrices.translate(((widget.width / 2f)), ((widget.height / 2f)))
+        matrices.rotate(Math.toRadians(rotation.toDouble()).toFloat())
         val scalingFactor = calculateScalingFactor(
             widget.width.toDouble(),
             widget.height.toDouble(),
             abs(rotation.toDouble())
         ).toFloat()
-        matrices.scale(scalingFactor, scalingFactor, 0f)
-        matrices.translate(-((widget.width / 2f)), -((widget.height / 2f)), 0f)
-        matrices.translate(-x.toFloat(), -y.toFloat(), 0f)
+        matrices.scale(scalingFactor, scalingFactor)
+        matrices.translate(-((widget.width / 2f)), -((widget.height / 2f)))
+        matrices.translate(-x.toFloat(), -y.toFloat())
         widget.paint(context, x, y, mouseX, mouseY)
-        matrices.pop()
+        matrices.popMatrix()
         // outline
 
         if (isSelected) {

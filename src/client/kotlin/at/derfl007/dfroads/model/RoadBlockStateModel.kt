@@ -4,10 +4,6 @@ import at.derfl007.dfroads.block.RoadBaseBlock
 import at.derfl007.dfroads.util.TransformHelper
 import com.mojang.serialization.MapCodec
 import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateModel
-import net.fabricmc.fabric.api.renderer.v1.Renderer
-import net.fabricmc.fabric.api.renderer.v1.material.BlendMode
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial
-import net.fabricmc.fabric.api.renderer.v1.material.ShadeMode
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView.BAKE_LOCK_UV
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView.BAKE_NORMALIZED
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter
@@ -45,18 +41,15 @@ class RoadBlockStateModel(
         val textureFacing = state[RoadBaseBlock.TEXTURE_FACING]
         val color = state[RoadBaseBlock.COLOR].argb()
 
-        val finder = Renderer.get().materialFinder()
-        val material = finder.shadeMode(ShadeMode.ENHANCED).emissive(false).blendMode(BlendMode.CUTOUT).find()
-
         emitter.pushTransform(TransformHelper.translateY(RoadBaseBlock.MIN_Y))
 
         emitter.color(0, -1).color(1, -1).color(2, -1).color(3, -1)
-        drawBack(emitter, facing, roadSprite, material)
-        drawFront(emitter, facing, roadSprite, material)
-        drawLeft(emitter, facing, roadSprite, material)
-        drawRight(emitter, facing, roadSprite, material)
-        drawTop(emitter, facing, roadSprite, material)
-        drawBottom(emitter, roadSprite, material)
+        drawBack(emitter, facing, roadSprite)
+        drawFront(emitter, facing, roadSprite)
+        drawLeft(emitter, facing, roadSprite)
+        drawRight(emitter, facing, roadSprite)
+        drawTop(emitter, facing, roadSprite)
+        drawBottom(emitter, roadSprite)
 
         val textures = sprites[state[RoadBaseBlock.TEXTURE]] ?: sprites[RoadBaseBlock.RoadTexture.ROAD_EMPTY]!!
 
@@ -71,7 +64,6 @@ class RoadBlockStateModel(
                 emitter,
                 facing,
                 textureMap["center_straight"]!!,
-                material,
                 color,
                 state[RoadBaseBlock.TEXTURE].size // texture is bigger to allow connecting diagonally
             )
@@ -80,26 +72,25 @@ class RoadBlockStateModel(
                 emitter,
                 facing,
                 textureMap["center_diagonal"]!!,
-                material,
                 color,
                 state[RoadBaseBlock.TEXTURE].size
             )
 
             connections.straightConnections.filter { it.value }.forEach {
-                drawSurface(emitter, facing, textureMap[it.key.name.lowercase()]!!, material, color,
+                drawSurface(emitter, facing, textureMap[it.key.name.lowercase()]!!, color,
                     state[RoadBaseBlock.TEXTURE].size)
             }
 
             connections.diagonalConnections.filter { it.value }.forEach {
                 val dir = "${it.key.name.lowercase()}_${it.key.rotateYClockwise().name.lowercase()}"
-                drawSurface(emitter, facing, textureMap[dir]!!, material, color, state[RoadBaseBlock.TEXTURE].size)
+                drawSurface(emitter, facing, textureMap[dir]!!, color, state[RoadBaseBlock.TEXTURE].size)
             }
         } else {
             emitter.pushTransform(TransformHelper.rotate(textureFacing.opposite.horizontalQuarterTurns))
             if (state[RoadBaseBlock.BIG] && textures.size > 1) {
-                drawSurface(emitter, facing, textures[1], material, color, 192)
+                drawSurface(emitter, facing, textures[1], color, 192)
             } else {
-                drawSurface(emitter, facing, textures.first(), material, color)
+                drawSurface(emitter, facing, textures.first(), color)
             }
             emitter.popTransform()
         }
@@ -107,23 +98,21 @@ class RoadBlockStateModel(
         emitter.popTransform()
     }
 
-    private fun drawBack(emitter: QuadEmitter, facing: Direction, sprite: Sprite, material: RenderMaterial) {
+    private fun drawBack(emitter: QuadEmitter, facing: Direction, sprite: Sprite) {
         emitter.square(facing, 0f, bottomHeight, 1f, topHeight, 0f)
             .spriteBake(sprite, BAKE_LOCK_UV)
-            .material(material)
             .cullFace(null)
             .emit()
     }
 
-    private fun drawFront(emitter: QuadEmitter, facing: Direction, sprite: Sprite, material: RenderMaterial) {
+    private fun drawFront(emitter: QuadEmitter, facing: Direction, sprite: Sprite) {
         emitter.square(facing.opposite, 0f, bottomHeight, 1f, slopeHeight, 0f)
             .spriteBake(sprite, BAKE_LOCK_UV)
-            .material(material)
             .cullFace(null)
             .emit()
     }
 
-    private fun drawLeft(emitter: QuadEmitter, facing: Direction, sprite: Sprite, material: RenderMaterial) {
+    private fun drawLeft(emitter: QuadEmitter, facing: Direction, sprite: Sprite) {
         emitter.square(facing.rotateYCounterclockwise(), 0f, bottomHeight, 1f, topHeight, 0f)
 
         val posTopRight = emitter.copyPos(3, Vector3f())
@@ -131,12 +120,11 @@ class RoadBlockStateModel(
 
         emitter.pos(3, posTopRight)
             .spriteBake(sprite, BAKE_LOCK_UV)
-            .material(material)
             .cullFace(null)
             .emit()
     }
 
-    private fun drawRight(emitter: QuadEmitter, facing: Direction, sprite: Sprite, material: RenderMaterial) {
+    private fun drawRight(emitter: QuadEmitter, facing: Direction, sprite: Sprite) {
         emitter.square(facing.rotateYClockwise(), 0f, bottomHeight, 1f, topHeight, 0f)
 
         val posTopLeft = emitter.copyPos(0, Vector3f())
@@ -144,12 +132,11 @@ class RoadBlockStateModel(
 
         emitter.pos(0, posTopLeft)
             .spriteBake(sprite, BAKE_LOCK_UV)
-            .material(material)
             .cullFace(null)
             .emit()
     }
 
-    private fun drawTop(emitter: QuadEmitter, facing: Direction, sprite: Sprite, material: RenderMaterial) {
+    private fun drawTop(emitter: QuadEmitter, facing: Direction, sprite: Sprite) {
         emitter.square(Direction.UP, 0f, 0f, 1f, 1f, 1 - topHeight)
 
         val bottomRightIndex = 3 - ((facing.opposite.horizontalQuarterTurns + 1) % 4)
@@ -162,7 +149,6 @@ class RoadBlockStateModel(
         emitter.pos(bottomRightIndex, posBottomRight)
             .pos(bottomLeftIndex, posBottomLeft)
             .spriteBake(sprite, BAKE_LOCK_UV)
-            .material(material)
             .cullFace(null)
             .emit()
     }
@@ -171,7 +157,6 @@ class RoadBlockStateModel(
         emitter: QuadEmitter,
         facing: Direction,
         sprite: Sprite,
-        material: RenderMaterial,
         color: Int,
         textureSize: Int = 64
     ) {
@@ -197,15 +182,13 @@ class RoadBlockStateModel(
         }
 
         emitter.spriteBake(sprite, BAKE_NORMALIZED)
-            .material(material)
             .cullFace(null)
             .emit()
     }
 
-    private fun drawBottom(emitter: QuadEmitter, sprite: Sprite, material: RenderMaterial) {
+    private fun drawBottom(emitter: QuadEmitter, sprite: Sprite) {
         emitter.square(Direction.DOWN, 0f, 0f, 1f, 1f, 0f)
             .spriteBake(sprite, BAKE_LOCK_UV)
-            .material(material)
             .emit()
     }
 

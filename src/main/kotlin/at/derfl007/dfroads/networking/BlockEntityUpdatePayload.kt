@@ -1,6 +1,7 @@
 package at.derfl007.dfroads.networking
 
 import at.derfl007.dfroads.DFRoads
+import at.derfl007.dfroads.DFRoads.LOGGER
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.nbt.NbtCompound
@@ -10,6 +11,8 @@ import net.minecraft.network.codec.PacketCodecs
 import net.minecraft.network.packet.CustomPayload
 import net.minecraft.registry.RegistryKeys
 import net.minecraft.registry.RegistryWrapper
+import net.minecraft.storage.NbtReadView
+import net.minecraft.util.ErrorReporter
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 
@@ -37,8 +40,7 @@ class BlockEntityUpdatePayload(val pos: BlockPos, val blockEntityType: BlockEnti
                 val world = player.world!!
                 world.getBlockEntity(payload.pos, payload.blockEntityType)?.ifPresent { entity ->
                     entity.read(
-                        payload.nbt,
-                        RegistryWrapper.WrapperLookup.of(player.registryManager.stream())
+                        NbtReadView.create(ErrorReporter.Logging(entity.reporterContext, LOGGER), RegistryWrapper.WrapperLookup.of(player.registryManager.stream()), payload.nbt),
                     )
                     val state = world.getBlockState(payload.pos)
                     world.updateListeners(payload.pos, state, state, 0);

@@ -1,8 +1,8 @@
 package at.derfl007.dfroads.gui.widget
 
+import at.derfl007.dfroads.util.toRad
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel
 import net.minecraft.client.gui.DrawContext
-import net.minecraft.util.math.RotationAxis
 
 /**
  * Panel which can rotate all child elements around their center
@@ -14,12 +14,12 @@ class WRotatablePanel(var rotation: Float = 0f) : WPlainPanel() {
 
         for (child in children) {
             val matrices = context!!.matrices
-            matrices.push()
-            matrices.translate(x.toFloat(), y.toFloat(), 0f)
-            matrices.translate((child.x + (child.width / 2)).toDouble(), (child.y + (child.height / 2)).toDouble(), 0.0)
-            matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(rotation))
+            matrices.pushMatrix()
+            matrices.translate(x.toFloat(), y.toFloat())
+            matrices.translate(child.x + (child.width / 2f), child.y + (child.height / 2f))
+            matrices.rotate(rotation.toRad())
             child.paint(context, -child.width / 2, -child.height / 2, mouseX - child.getX(), mouseY - child.getY())
-            matrices.pop()
+            matrices.popMatrix()
         }
     }
 
