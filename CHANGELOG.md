@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/derfl007/dfroads-repaved/compare/v1.1.0...v1.2.0) (2025-07-15)
+
+
+### Features
+
+* Update to Minecraft 1.21.7 ([3259d14](https://github.com/derfl007/dfroads-repaved/commit/3259d145850d4e50f1038c77b154d4508368a102))
+
 ## [1.1.0](https://github.com/derfl007/dfroads-repaved/compare/v1.0.2...v1.1.0) (2025-07-12)
 
 
